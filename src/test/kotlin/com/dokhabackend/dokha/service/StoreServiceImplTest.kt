@@ -1,10 +1,8 @@
 package com.dokhabackend.dokha.service
 
 import com.dokhabackend.dokha.entity.dictionary.Store
-import com.dokhabackend.dokha.repository.dictionary.StoreRepository
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNotNull
-import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired

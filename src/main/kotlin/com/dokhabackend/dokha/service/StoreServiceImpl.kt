@@ -16,5 +16,5 @@ constructor(private val storeRepository: StoreRepository) : StoreService {
 
     override fun findById(id: Long) = storeRepository.findById(id)
 
-    override fun findAll(): MutableIterable<Store> = storeRepository.findAll()
+    override fun findAll(): Collection<Store> = storeRepository.findAll()
 }

@@ -1,6 +1,5 @@
 package com.dokhabackend.dokha.entity.dictionary
 
-import lombok.NoArgsConstructor
 import javax.persistence.*
 
 

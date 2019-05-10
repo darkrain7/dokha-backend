@@ -14,4 +14,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface StoreRepository : CrudRepository<Store, Long> {
 
+    override fun findAll() : Collection<Store>
 }

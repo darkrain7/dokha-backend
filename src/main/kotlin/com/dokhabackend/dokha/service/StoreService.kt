@@ -16,5 +16,5 @@ interface StoreService {
 
     fun findById(id : Long): Optional<Store>
 
-    fun findAll(): MutableIterable<Store>
+    fun findAll(): Collection<Store>
 }
