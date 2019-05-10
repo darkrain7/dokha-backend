@@ -1,0 +1,13 @@
+server:
+  port: 42500
+
+spring:
+  application:
+    name: dokha-backend
+  datasource:
+    driverClassName: org.postgresql.Driver
+    username: dokha
+    password: dokha
+    url: jdbc:postgresql://localhost:5432/dokha
+  flyway:
+    baseline-on-migrate: true
