@@ -2,6 +2,7 @@ package com.dokhabackend.dokha.repository
 
 import com.dokhabackend.dokha.entity.User
 import org.springframework.data.repository.CrudRepository
+import java.util.*
 
 
 /**
@@ -10,4 +11,10 @@ import org.springframework.data.repository.CrudRepository
  *
  **/
 interface UserRepository : CrudRepository<User, Long> {
+
+    override fun findAll(): Collection<User>
+
+    fun findByLoginAndPassword(login: String, password: String): Optional<User>
+
+    fun findByLogin(login: String): Optional<User>
 }

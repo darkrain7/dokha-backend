@@ -11,17 +11,21 @@ import javax.persistence.*
  **/
 
 @Entity
-@Table(name = "user")
+@Table(name = "user", schema = "dokha")
 @Builder
 data class User(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Int,
+        val id: Long,
 
-        @Column(name = "first_name")
-        val firstName: String,
+        @Column(name = "login")
+        val login: String,
 
-        @Column(name = "last_name")
-        val lastName: String
+        @Column(name = "password")
+        val password: String,
+
+        @OneToOne
+        @JoinColumn(name = "role_id", referencedColumnName = "id")
+        val role: Role
 )
