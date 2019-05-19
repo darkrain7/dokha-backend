@@ -72,7 +72,7 @@ class UserServiceImplTest {
     fun createUser() {
 
         val role = roleService.findById(RoleEnum.USER.getId())
-        val user = User(id = 1, login = "test", password = "test", role = role)
+        val user = User(id = null, login = "test", password = "test", role = role)
 
         val createdUser = userService.createUser(user)
 
