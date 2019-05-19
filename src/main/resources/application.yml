@@ -11,3 +11,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/dokha
   flyway:
     baseline-on-migrate: true
+
+---
+
+spring:
+  profiles: test
+
+---

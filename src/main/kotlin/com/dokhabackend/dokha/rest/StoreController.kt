@@ -4,6 +4,8 @@ import com.dokhabackend.dokha.converter.dictionary.StoreToStoreDtoConverter
 import com.dokhabackend.dokha.dto.dictionary.StoreDto
 import com.dokhabackend.dokha.service.StoreService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
@@ -22,18 +24,18 @@ class StoreController @Autowired constructor(val storeToStoreDtoConverter: Store
                                              val storeService: StoreService) {
 
     @RequestMapping(method = [RequestMethod.GET])
-    fun getById(@RequestParam("id") id: Long): StoreDto {
+    fun getById(@RequestParam("id") id: Long): ResponseEntity<StoreDto> {
 
         val store = storeService.findById(id)
 
-        return storeToStoreDtoConverter.convert(store.get())
+        return ResponseEntity(storeToStoreDtoConverter.convert(store.get()), HttpStatus.OK)
     }
 
     @RequestMapping(value = ["/findAll"], method = [RequestMethod.GET])
-    fun getAll(): Collection<StoreDto> {
+    fun getAll(): ResponseEntity<Collection<StoreDto>> {
 
         val stores = storeService.findAll()
 
-        return storeToStoreDtoConverter.convertToList(stores)
+        return ResponseEntity(storeToStoreDtoConverter.convertToList(stores), HttpStatus.OK)
     }
 }
