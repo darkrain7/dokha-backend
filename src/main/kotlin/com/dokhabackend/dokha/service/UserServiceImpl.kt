@@ -4,12 +4,35 @@ import com.dokhabackend.dokha.entity.User
 import com.dokhabackend.dokha.repository.UserRepository
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
+import java.util.*
+
 
 @Slf4j
 @Service
 class UserServiceImpl
-@Autowired constructor(private val userRepository: UserRepository) : UserService {
+@Autowired constructor(private val userRepository: UserRepository) : UserService, UserDetailsService {
+
+    override fun loadUserByUsername(login: String): UserDetails {
+
+        val user = findByLogin(login)
+        // указываем роли для этого пользователя
+        val roles = HashSet<GrantedAuthority>()
+        user.roles.forEach { r -> roles.add(SimpleGrantedAuthority(r.name)) }
+
+        // на основании полученных данных формируем объект UserDetails
+        // который позволит проверить введенный пользователем логин и пароль
+        // и уже потом аутентифицировать пользователя
+        return org.springframework.security.core.userdetails.User(
+                user.login,
+                user.password,
+                roles)
+    }
 
     override fun findById(id: Long): User {
         val user = userRepository.findById(id)
@@ -39,6 +62,10 @@ class UserServiceImpl
     }
 
     override fun login(login: String, password: String): User {
+
+        SecurityContextHolder.getContext().authentication.details
+
+        SecurityContextHolder.getContext().authentication.credentials
 
         val user = userRepository.findByLoginAndPassword(login, password)
 

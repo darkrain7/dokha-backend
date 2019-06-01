@@ -10,7 +10,20 @@ spring:
     password: dokha
     url: jdbc:postgresql://localhost:5432/dokha
   flyway:
-    baseline-on-migrate: true
+    schemas: dokha
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+jwt:
+  signingKey: dokha42
+  header: X-Auth-Token
+  accessTokenValidityMillisecond: 31556926 # год
+
+testUser:
+  login: test
+  password: password
+
 
 ---
 
