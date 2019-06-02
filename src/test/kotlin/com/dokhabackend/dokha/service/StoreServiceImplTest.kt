@@ -32,7 +32,7 @@ class StoreServiceImplTest {
     fun create() {
 
         val store = Store(
-
+                null,
                 name = "testName",
                 location = "testLocation")
 
