@@ -5,6 +5,7 @@ import com.dokhabackend.dokha.dto.dictionary.StoreDto
 import com.dokhabackend.dokha.entity.dictionary.Store
 import com.dokhabackend.dokha.service.StoreService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -34,7 +35,7 @@ class StoreController @Autowired constructor(val storeToStoreDtoConverter: Store
 
         val stores = storeService.findAll()
 
-        return ResponseEntity.ok(storeToStoreDtoConverter.convertToList(stores))
+        return ResponseEntity(storeToStoreDtoConverter.convertToList(stores), HttpStatus.OK)
     }
 
     @RequestMapping(value = ["/create"], method = [RequestMethod.POST])
