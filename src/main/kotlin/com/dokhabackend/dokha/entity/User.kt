@@ -1,6 +1,5 @@
 package com.dokhabackend.dokha.entity
 
-import com.dokhabackend.dokha.entity.constant.RoleEnum
 import com.dokhabackend.dokha.security.UserRoleEnum
 import lombok.Builder
 import javax.persistence.*
@@ -19,7 +18,7 @@ data class User(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long?,
+        val id: Long = 0,
 
         @Column(name = "login")
         val login: String,
@@ -27,8 +26,8 @@ data class User(
         @Column(name = "password")
         val password: String,
 
-        @ElementCollection(targetClass = RoleEnum::class, fetch = FetchType.EAGER)
+        @ElementCollection(targetClass = UserRoleEnum::class, fetch = FetchType.EAGER)
         @CollectionTable(name = "user_role", joinColumns = [JoinColumn(name = "user_id")])
         @Enumerated(EnumType.ORDINAL)
-        val roles: Set<RoleEnum>
+        val roles: Set<UserRoleEnum>
 )

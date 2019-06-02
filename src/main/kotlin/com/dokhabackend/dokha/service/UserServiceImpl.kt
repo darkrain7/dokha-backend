@@ -1,14 +1,19 @@
 package com.dokhabackend.dokha.service
 
+import com.dokhabackend.dokha.config.security.JwtTokenUtil
 import com.dokhabackend.dokha.entity.User
 import com.dokhabackend.dokha.repository.UserRepository
+import com.dokhabackend.dokha.security.UserRoleEnum
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -16,18 +21,39 @@ import java.util.*
 @Slf4j
 @Service
 class UserServiceImpl
-@Autowired constructor(private val userRepository: UserRepository) : UserService, UserDetailsService {
+@Autowired constructor(private val userRepository: UserRepository,
+                       private val jwtTokenUtil: JwtTokenUtil,
+                       private val passwordEncoder: BCryptPasswordEncoder,
+                       private val authenticationManager: AuthenticationManager) : UserService, UserDetailsService {
+
+    override fun login(login: String, password: String): String {
+
+        val authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(login, password))
+
+        SecurityContextHolder.getContext().authentication = authentication
+
+        val user = findByLogin(login)
+
+        return jwtTokenUtil.generateToken(user)
+    }
+
+    override fun register(login: String, password: String): User {
+
+        val user = User(
+                login = login,
+                password = passwordEncode(password),
+                roles = setOf(UserRoleEnum.USER))
+
+        return createUser(user)
+    }
 
     override fun loadUserByUsername(login: String): UserDetails {
 
         val user = findByLogin(login)
-        // указываем роли для этого пользователя
+
         val roles = HashSet<GrantedAuthority>()
         user.roles.forEach { r -> roles.add(SimpleGrantedAuthority(r.name)) }
 
-        // на основании полученных данных формируем объект UserDetails
-        // который позволит проверить введенный пользователем логин и пароль
-        // и уже потом аутентифицировать пользователя
         return org.springframework.security.core.userdetails.User(
                 user.login,
                 user.password,
@@ -43,6 +69,7 @@ class UserServiceImpl
     override fun findAll(): Collection<User> = userRepository.findAll()
 
     override fun findByLoginAndPassword(login: String, password: String): User {
+
         val user = userRepository.findByLoginAndPassword(login, password)
 
         return user.orElseThrow { throw Exception("User Not Found") }
@@ -61,21 +88,11 @@ class UserServiceImpl
         return userRepository.save(user)
     }
 
-    override fun login(login: String, password: String): User {
-
-        SecurityContextHolder.getContext().authentication.details
-
-        SecurityContextHolder.getContext().authentication.credentials
-
-        val user = userRepository.findByLoginAndPassword(login, password)
-
-        return user.orElseThrow { throw IllegalAccessError("User Not Found") }
-
-    }
-
     private fun checkUserLoginExist(user: User) {
         val checkUserLogin = userRepository.findByLogin(user.login).isPresent
         if (checkUserLogin)
             throw IllegalArgumentException("Login already exist")
     }
+
+    private fun passwordEncode(password: String) = passwordEncoder.encode(password)
 }

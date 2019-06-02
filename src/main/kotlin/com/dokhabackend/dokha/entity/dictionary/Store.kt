@@ -1,5 +1,6 @@
 package com.dokhabackend.dokha.entity.dictionary
 
+import java.util.*
 import javax.persistence.*
 
 
@@ -15,7 +16,7 @@ data class Store(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long?,
+        val id: Long = 0,
 
         @Column(name = "name")
         val name: String,

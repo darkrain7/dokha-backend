@@ -10,6 +10,10 @@ import com.dokhabackend.dokha.entity.User
  **/
 interface UserService {
 
+    fun login(login: String, password: String): String
+
+    fun register(login: String, password: String) : User
+
     fun findById(id: Long): User
 
     fun findAll(): Collection<User>
@@ -19,6 +23,4 @@ interface UserService {
     fun findByLogin(login: String): User
 
     fun createUser(user: User): User
-
-    fun login(login: String, password: String): User
 }

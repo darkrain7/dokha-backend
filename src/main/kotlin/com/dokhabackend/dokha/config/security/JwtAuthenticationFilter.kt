@@ -49,7 +49,7 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
 
                 login = jwtTokenUtil.getUsernameFromToken(header)
 
-                if (login != null && SecurityContextHolder.getContext().authentication == null) {
+                if (SecurityContextHolder.getContext().authentication == null) {
 
                     val userDetails = userDetailsService.loadUserByUsername(login)
 

@@ -10,13 +10,14 @@ import org.springframework.stereotype.Service
 
 @Slf4j
 @Service
+@PreAuthorize("isAuthenticated()")
 class StoreServiceImpl
 @Autowired constructor(private val storeRepository: StoreRepository) : StoreService {
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     override fun create(store: Store): Store = storeRepository.save(store)
 
     override fun findById(id: Long) = storeRepository.findById(id)
 
-    @Secured("ADMIN")
     override fun findAll(): Collection<Store> = storeRepository.findAll()
 }

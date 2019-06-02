@@ -3,6 +3,7 @@ package com.dokhabackend.dokha.entity
 import com.dokhabackend.dokha.entity.dictionary.PlaceReservation
 import lombok.Builder
 import java.sql.Timestamp
+import java.util.*
 import javax.persistence.*
 
 /**
@@ -18,7 +19,7 @@ data class Reserve(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long,
+        val id: Long = 0,
 
         @ManyToOne
         @JoinColumn(name = "place_id")

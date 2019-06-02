@@ -7,9 +7,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 /**
  * Semenov A.E.
@@ -18,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional
 @RunWith(SpringRunner::class)
 @SpringBootTest
 @Transactional
+@ActiveProfiles(profiles = ["test"])
+@WithMockUser(authorities = ["ADMIN"])
 class StoreServiceImplTest {
 
     @Autowired
@@ -27,7 +32,7 @@ class StoreServiceImplTest {
     fun create() {
 
         val store = Store(
-                id = null,
+
                 name = "testName",
                 location = "testLocation")
 
