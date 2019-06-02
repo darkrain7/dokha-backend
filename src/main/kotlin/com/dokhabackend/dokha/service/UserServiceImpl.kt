@@ -18,10 +18,11 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 
-@Slf4j
 @Service
+@Slf4j
 class UserServiceImpl
-@Autowired constructor(private val userRepository: UserRepository,
+@Autowired constructor(private val logger
+        private val userRepository: UserRepository,
                        private val jwtTokenUtil: JwtTokenUtil,
                        private val passwordEncoder: BCryptPasswordEncoder,
                        private val authenticationManager: AuthenticationManager) : UserService, UserDetailsService {
@@ -38,6 +39,7 @@ class UserServiceImpl
     }
 
     override fun register(login: String, password: String): User {
+
 
         val user = User(
                 login = login,

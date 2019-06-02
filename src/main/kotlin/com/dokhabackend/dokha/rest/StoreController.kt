@@ -2,14 +2,11 @@ package com.dokhabackend.dokha.rest
 
 import com.dokhabackend.dokha.converter.dictionary.StoreToStoreDtoConverter
 import com.dokhabackend.dokha.dto.dictionary.StoreDto
+import com.dokhabackend.dokha.entity.dictionary.Store
 import com.dokhabackend.dokha.service.StoreService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 /**
@@ -18,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
  *
  **/
 
+@CrossOrigin
 @RestController
 @RequestMapping(value = ["/store"])
 class StoreController @Autowired constructor(val storeToStoreDtoConverter: StoreToStoreDtoConverter,
@@ -26,7 +24,6 @@ class StoreController @Autowired constructor(val storeToStoreDtoConverter: Store
     @RequestMapping(method = [RequestMethod.GET])
     fun getById(@RequestParam("id") id: Long): ResponseEntity<StoreDto> {
 
-        val authentication = SecurityContextHolder.getContext().authentication
         val store = storeService.findById(id)
 
         return ResponseEntity.ok(storeToStoreDtoConverter.convert(store.get()))
@@ -38,5 +35,16 @@ class StoreController @Autowired constructor(val storeToStoreDtoConverter: Store
         val stores = storeService.findAll()
 
         return ResponseEntity.ok(storeToStoreDtoConverter.convertToList(stores))
+    }
+
+    @RequestMapping(value = ["/create"], method = [RequestMethod.POST])
+    fun create(@RequestBody storeDto: StoreDto) {
+
+        val store = Store(
+                -1,
+                "test",
+                "test")
+
+        storeService.create(store)
     }
 }
