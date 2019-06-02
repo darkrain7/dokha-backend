@@ -16,7 +16,7 @@ data class Store(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long = 0,
+        val id: Long?,
 
         @Column(name = "name")
         val name: String,

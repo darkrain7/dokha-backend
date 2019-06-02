@@ -39,10 +39,10 @@ class StoreController @Autowired constructor(val storeToStoreDtoConverter: Store
     }
 
     @RequestMapping(value = ["/create"], method = [RequestMethod.POST])
-    fun create(@RequestBody storeDto: StoreDto) {
+    fun create() {
 
         val store = Store(
-                -1,
+                null,
                 "test",
                 "test")
 
