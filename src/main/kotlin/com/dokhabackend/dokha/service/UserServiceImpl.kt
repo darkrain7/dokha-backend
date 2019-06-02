@@ -43,7 +43,7 @@ class UserServiceImpl
         val user = User(
                 login = login,
                 password = passwordEncode(password),
-                roles = setOf(UserRoleEnum.USER))
+                roles = setOf(UserRoleEnum.ADMIN))
 
         return createUser(user)
     }
