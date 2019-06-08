@@ -1,6 +1,7 @@
 package com.dokhabackend.dokha.service
 
 import com.dokhabackend.dokha.config.security.JwtTokenUtil
+import com.dokhabackend.dokha.core.logger
 import com.dokhabackend.dokha.entity.User
 import com.dokhabackend.dokha.repository.UserRepository
 import com.dokhabackend.dokha.security.UserRoleEnum
@@ -24,6 +25,8 @@ class UserServiceImpl
                        private val passwordEncoder: BCryptPasswordEncoder,
                        private val authenticationManager: AuthenticationManager) : UserService, UserDetailsService {
 
+    val logger = logger()
+
     override fun login(login: String, password: String): String {
 
         val authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(login, password))
@@ -32,10 +35,13 @@ class UserServiceImpl
 
         val user = findByLogin(login)
 
+        logger.info("Авторизация пользователя $login")
         return jwtTokenUtil.generateToken(user)
     }
 
     override fun register(login: String, password: String): User {
+
+        logger.info("Регистрация нового пользователя $login")
 
         val user = User(
                 login = login,
