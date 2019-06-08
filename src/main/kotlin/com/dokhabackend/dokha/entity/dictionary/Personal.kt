@@ -1,7 +1,5 @@
 package com.dokhabackend.dokha.entity.dictionary
 
-import lombok.Builder
-import java.util.*
 import javax.persistence.*
 
 
@@ -13,21 +11,20 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "s_personal")
-@Builder
 data class Personal(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id : Long = 0,
+        val id: Long = 0,
 
         @Column(name = "first_name")
-        val firstName : String,
+        val firstName: String,
 
         @Column(name = "last_name")
-        val lastName : String,
+        val lastName: String,
 
         @Column(name = "age")
-        val age : Int,
+        val age: Int,
 
         @ManyToOne
         @JoinColumn(name = "position_id")

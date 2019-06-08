@@ -1,9 +1,7 @@
 package com.dokhabackend.dokha.entity
 
 import com.dokhabackend.dokha.entity.dictionary.PlaceReservation
-import lombok.Builder
 import java.sql.Timestamp
-import java.util.*
 import javax.persistence.*
 
 /**
@@ -14,7 +12,6 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "reserve")
-@Builder
 data class Reserve(
 
         @Id

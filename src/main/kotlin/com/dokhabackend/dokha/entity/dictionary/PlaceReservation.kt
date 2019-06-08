@@ -1,7 +1,5 @@
 package com.dokhabackend.dokha.entity.dictionary
 
-import lombok.Builder
-import java.util.*
 import javax.persistence.*
 
 
@@ -13,7 +11,6 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "s_place_reservation")
-@Builder
 data class PlaceReservation(
 
         @Id

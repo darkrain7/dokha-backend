@@ -1,7 +1,6 @@
 package com.dokhabackend.dokha.entity
 
 import com.dokhabackend.dokha.security.UserRoleEnum
-import lombok.Builder
 import javax.persistence.*
 
 
@@ -13,7 +12,6 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "user", schema = "dokha")
-@Builder
 data class User(
 
         @Id

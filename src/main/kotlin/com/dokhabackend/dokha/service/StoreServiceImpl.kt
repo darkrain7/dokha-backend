@@ -2,13 +2,10 @@ package com.dokhabackend.dokha.service
 
 import com.dokhabackend.dokha.entity.dictionary.Store
 import com.dokhabackend.dokha.repository.dictionary.StoreRepository
-import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 
-@Slf4j
 @Service
 @PreAuthorize("isAuthenticated()")
 class StoreServiceImpl

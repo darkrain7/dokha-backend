@@ -4,7 +4,6 @@ import com.dokhabackend.dokha.config.security.JwtTokenUtil
 import com.dokhabackend.dokha.entity.User
 import com.dokhabackend.dokha.repository.UserRepository
 import com.dokhabackend.dokha.security.UserRoleEnum
-import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -19,7 +18,6 @@ import java.util.*
 
 
 @Service
-@Slf4j
 class UserServiceImpl
 @Autowired constructor(private val userRepository: UserRepository,
                        private val jwtTokenUtil: JwtTokenUtil,
@@ -38,7 +36,6 @@ class UserServiceImpl
     }
 
     override fun register(login: String, password: String): User {
-
 
         val user = User(
                 login = login,
