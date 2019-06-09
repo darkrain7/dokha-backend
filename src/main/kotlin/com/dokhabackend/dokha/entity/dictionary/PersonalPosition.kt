@@ -12,12 +12,12 @@ import javax.persistence.*
  **/
 
 @Entity
-@Table(name = "s_personal_position")
+@Table(name = "s_personal_position", schema = "dokha")
 data class PersonalPosition(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long = 0,
+        val id: Long?,
 
         @Column(name = "name")
         val name: String

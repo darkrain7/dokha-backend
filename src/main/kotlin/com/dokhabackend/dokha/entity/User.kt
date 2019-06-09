@@ -16,7 +16,7 @@ data class User(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long = 0,
+        val id: Long?,
 
         @Column(name = "login")
         val login: String,

@@ -10,15 +10,18 @@ import javax.persistence.*
  **/
 
 @Entity
-@Table(name = "s_place_reservation")
+@Table(name = "s_place_reservation", schema = "dokha")
 data class PlaceReservation(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long = 0,
+        val id: Long?,
 
         @Column(name = "description")
         val description: String,
+
+        @Column(name = "seats_count")
+        val seatsCount: Int,
 
         @ManyToOne
         @JoinColumn(name = "store_id")

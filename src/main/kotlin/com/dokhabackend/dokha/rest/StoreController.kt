@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*
 class StoreController @Autowired constructor(val storeToStoreDtoConverter: StoreToStoreDtoConverter,
                                              val storeService: StoreService) {
 
-    @RequestMapping(method = [RequestMethod.GET])
+    @GetMapping
     fun getById(@RequestParam("id") id: Long): RestResponse<StoreDto> {
 
         val store = storeService.findById(id)
@@ -28,7 +28,7 @@ class StoreController @Autowired constructor(val storeToStoreDtoConverter: Store
         return RestResponse(storeToStoreDtoConverter.convert(store.get()))
     }
 
-    @RequestMapping(value = ["/findAll"], method = [RequestMethod.GET])
+    @GetMapping(value = ["/findAll"])
     fun getAll(): RestResponse<Collection<StoreDto>> {
 
         val stores = storeService.findAll()

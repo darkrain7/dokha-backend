@@ -11,5 +11,7 @@ import org.springframework.data.repository.CrudRepository
  **/
 
 interface PlaceReservationRepository : CrudRepository<PlaceReservation, Long> {
+    override fun findAll(): Collection<PlaceReservation>
 
+    fun findByStoreId(id: Long): Collection<PlaceReservation>
 }

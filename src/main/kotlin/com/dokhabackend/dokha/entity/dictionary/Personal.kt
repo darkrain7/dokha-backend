@@ -10,12 +10,12 @@ import javax.persistence.*
  **/
 
 @Entity
-@Table(name = "s_personal")
+@Table(name = "s_personal", schema = "dokha")
 data class Personal(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long = 0,
+        val id: Long?,
 
         @Column(name = "first_name")
         val firstName: String,
@@ -29,4 +29,5 @@ data class Personal(
         @ManyToOne
         @JoinColumn(name = "position_id")
         val personalPosition: PersonalPosition
+
 )

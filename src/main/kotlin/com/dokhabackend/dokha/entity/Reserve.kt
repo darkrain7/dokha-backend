@@ -11,12 +11,12 @@ import javax.persistence.*
  **/
 
 @Entity
-@Table(name = "reserve")
+@Table(name = "reserve", schema = "dokha")
 data class Reserve(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long = 0,
+        val id: Long?,
 
         @ManyToOne
         @JoinColumn(name = "place_id")

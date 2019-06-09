@@ -11,7 +11,7 @@ import javax.persistence.*
  **/
 
 @Entity
-@Table(name = "s_store")
+@Table(name = "s_store", schema = "dokha")
 data class Store(
 
         @Id
