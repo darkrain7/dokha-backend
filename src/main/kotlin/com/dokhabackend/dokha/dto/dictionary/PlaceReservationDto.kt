@@ -1,5 +1,7 @@
 package com.dokhabackend.dokha.dto.dictionary
 
+import com.dokhabackend.dokha.dto.ReservationDto
+
 
 /**
  * Semenov A.E.
@@ -14,5 +16,7 @@ data class PlaceReservationDto(
 
         val seatsCount: Int,
 
-        val storeId: Long
+        val storeId: Long,
+
+        val reservations: Collection<ReservationDto>
 )

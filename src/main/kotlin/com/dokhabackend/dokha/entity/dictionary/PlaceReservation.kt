@@ -1,5 +1,6 @@
 package com.dokhabackend.dokha.entity.dictionary
 
+import com.dokhabackend.dokha.entity.Reservation
 import javax.persistence.*
 
 
@@ -25,5 +26,8 @@ data class PlaceReservation(
 
         @ManyToOne
         @JoinColumn(name = "store_id")
-        val store: Store
+        val store: Store,
+
+        @OneToMany
+        val reservations : Collection<Reservation>
 )

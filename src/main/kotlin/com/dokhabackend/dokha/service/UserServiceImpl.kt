@@ -44,6 +44,7 @@ class UserServiceImpl
         logger.info("Регистрация нового пользователя $login")
 
         val user = User(
+                id = null,
                 login = login,
                 password = passwordEncode(password),
                 roles = setOf(UserRoleEnum.ADMIN))

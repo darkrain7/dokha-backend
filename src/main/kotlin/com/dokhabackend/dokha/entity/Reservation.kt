@@ -11,8 +11,8 @@ import javax.persistence.*
  **/
 
 @Entity
-@Table(name = "reserve", schema = "dokha")
-data class Reserve(
+@Table(name = "reservation", schema = "dokha")
+data class Reservation(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +26,6 @@ data class Reserve(
         @JoinColumn(name = "user_id")
         val user: User,
 
-        @Column(name = "reserve_time")
-        val reserveTime: Timestamp
+        @Column(name = "reservation_time")
+        val reservationTime: Timestamp
 )

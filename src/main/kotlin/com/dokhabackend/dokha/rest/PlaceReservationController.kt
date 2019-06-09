@@ -37,7 +37,7 @@ class PlaceReservationController
         return RestResponse(toDtoConverter.convertToList(placeReservations))
     }
 
-    @GetMapping
+    @GetMapping(value = ["/"])
     fun findByStoreId(@RequestParam("storeId") storeId: Long): RestResponse<Collection<PlaceReservationDto>> {
         val placeReservation = placeReservationService.findByStoreId(storeId)
 

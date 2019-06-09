@@ -1,6 +1,6 @@
 package com.dokhabackend.dokha.repository
 
-import com.dokhabackend.dokha.entity.Reserve
+import com.dokhabackend.dokha.entity.Reservation
 import org.springframework.data.repository.CrudRepository
 
 
@@ -10,6 +10,6 @@ import org.springframework.data.repository.CrudRepository
  *
  **/
 
-interface ReserveRepository : CrudRepository<Reserve, Long> {
+interface ReservationRepository : CrudRepository<Reservation, Long> {
 
 }

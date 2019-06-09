@@ -46,9 +46,9 @@ class StoreControllerTest {
 
         mvc.perform(get("/store?id={id}", -1)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("id", `is`(-1)))
-                .andExpect(jsonPath("name", `is`("testName")))
-                .andExpect(jsonPath("location", `is`("testLocation")))
+                .andExpect(jsonPath("$.data.id", `is`(-1)))
+                .andExpect(jsonPath("$.data.name", `is`("testName")))
+                .andExpect(jsonPath("$.data.location", `is`("testLocation")))
     }
 
     @Test
@@ -57,6 +57,6 @@ class StoreControllerTest {
 
         mvc.perform(get("/store/findAll")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize<Long>(2)))
+                .andExpect(jsonPath("$.data", hasSize<Long>(2)))
     }
 }
