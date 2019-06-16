@@ -1,7 +1,5 @@
 package com.dokhabackend.dokha.dto
 
-import java.sql.Timestamp
-
 
 /**
  * Semenov A.E.
@@ -14,7 +12,7 @@ data class ReservationDto(
 
         val placeReservationId: Long,
 
-        val user_id: Long,
+        val userId: Long,
 
-        val reservationTime: Timestamp
+        val reservationTime: Long
 )

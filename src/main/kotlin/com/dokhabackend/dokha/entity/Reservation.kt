@@ -1,7 +1,6 @@
 package com.dokhabackend.dokha.entity
 
 import com.dokhabackend.dokha.entity.dictionary.PlaceReservation
-import java.sql.Timestamp
 import javax.persistence.*
 
 /**
@@ -23,9 +22,9 @@ data class Reservation(
         val placeReservation: PlaceReservation,
 
         @ManyToOne
-        @JoinColumn(name = "user_id")
+        @JoinColumn(name = "userId")
         val user: User,
 
         @Column(name = "reservation_time")
-        val reservationTime: Timestamp
+        val reservationTime: Long
 )

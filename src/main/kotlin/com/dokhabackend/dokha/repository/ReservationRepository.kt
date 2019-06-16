@@ -2,6 +2,7 @@ package com.dokhabackend.dokha.repository
 
 import com.dokhabackend.dokha.entity.Reservation
 import org.springframework.data.repository.CrudRepository
+import java.sql.Timestamp
 
 
 /**
@@ -12,4 +13,9 @@ import org.springframework.data.repository.CrudRepository
 
 interface ReservationRepository : CrudRepository<Reservation, Long> {
 
+    fun findByPlaceReservationId(placeId: Long): Collection<Reservation>
+
+    fun findByPlaceReservationIdAndReservationTime(placeId: Long, reservationTime: Timestamp): Reservation
+
+    fun findByReservationTimeIsAfter()
 }
