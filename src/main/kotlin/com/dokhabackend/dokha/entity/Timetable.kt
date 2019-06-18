@@ -11,7 +11,7 @@ import javax.persistence.*
  **/
 
 @Entity
-@Table(name = "timetable")
+@Table(name = "timetable", schema = "dokha")
 data class Timetable(
 
         @Id
@@ -21,10 +21,12 @@ data class Timetable(
         @Column(name = "isWorkingDay")
         val workingDay: Boolean,
 
-        @Column(name = "date")
-        val date: Long,
+        @Column(name = "working_date")
+        val workingDate: Long,
 
-        @ManyToOne
-        @JoinColumn(name = "timetable_config_id")
-        val timetableConfig: TimetableConfig
+        @Column(name = "start_date")
+        val startDate: Long,
+
+        @Column(name = "end_date")
+        val endDate: Long
 )

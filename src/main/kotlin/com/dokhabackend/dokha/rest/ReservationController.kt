@@ -28,17 +28,12 @@ class ReservationController
         return RestResponse(toDtoConverter.convert(reservation))
     }
 
-    @GetMapping
-    fun findByPlaceReservationId(@RequestParam("reservationId") reservationId: Long): RestResponse<Collection<ReservationDto>> {
-
-        val reservations = reservationService.findByPlaceReservationId(reservationId)
-
-        return RestResponse(toDtoConverter.convertToList(reservations))
-    }
-
-    @PostMapping
-    fun reserve(@RequestBody reservationDto: ReservationDto) {
-
-    }
+//    @GetMapping
+//    fun findByPlaceReservationId(@RequestParam("reservationId") reservationId: Long): RestResponse<Collection<ReservationDto>> {
+//
+//        val reservations = reservationService.findByPlaceReservationId(reservationId)
+//
+//        return RestResponse(toDtoConverter.convertToList(reservations))
+//    }
 
 }

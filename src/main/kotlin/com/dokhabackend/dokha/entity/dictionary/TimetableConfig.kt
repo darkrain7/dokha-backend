@@ -10,7 +10,7 @@ import javax.persistence.*
  **/
 
 @Entity
-@Table(name = "s_timetable_config")
+@Table(name = "s_timetable_config", schema = "dokha")
 data class TimetableConfig(
 
         @Id
@@ -25,5 +25,9 @@ data class TimetableConfig(
 
         @ManyToOne
         @JoinColumn(name = "day_of_week_id")
-        val dayOfWeek: DayOfWeek
+        val dayOfWeek: DayOfWeek,
+
+        @ManyToOne
+        @JoinColumn(name = "store_id")
+        val store: Store
 )

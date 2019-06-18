@@ -15,7 +15,4 @@ interface ReservationRepository : CrudRepository<Reservation, Long> {
 
     fun findByPlaceReservationId(placeId: Long): Collection<Reservation>
 
-    fun findByPlaceReservationIdAndReservationTime(placeId: Long, reservationTime: Timestamp): Reservation
-
-    fun findByReservationTimeIsAfter()
 }
