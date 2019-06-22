@@ -1,6 +1,7 @@
 package com.dokhabackend.dokha.service
 
 import com.dokhabackend.dokha.entity.dictionary.Store
+import com.dokhabackend.dokha.service.dictionary.StoreService
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
@@ -32,9 +33,10 @@ class StoreServiceImplTest {
     fun create() {
 
         val store = Store(
-                null,
+                0,
                 name = "testName",
-                location = "testLocation")
+                location = "testLocation",
+                placeReservations = Collections.emptyList())
 
         val (id, name, location) = storeService.create(store)
 

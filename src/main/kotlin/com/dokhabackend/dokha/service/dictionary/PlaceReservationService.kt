@@ -1,4 +1,4 @@
-package com.dokhabackend.dokha.service
+package com.dokhabackend.dokha.service.dictionary
 
 import com.dokhabackend.dokha.entity.dictionary.PlaceReservation
 

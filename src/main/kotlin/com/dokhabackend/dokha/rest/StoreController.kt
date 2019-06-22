@@ -3,7 +3,7 @@ package com.dokhabackend.dokha.rest
 import com.dokhabackend.dokha.converter.dictionary.StoreToStoreDtoConverter
 import com.dokhabackend.dokha.core.RestResponse
 import com.dokhabackend.dokha.dto.dictionary.StoreDto
-import com.dokhabackend.dokha.service.StoreService
+import com.dokhabackend.dokha.service.dictionary.StoreService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 

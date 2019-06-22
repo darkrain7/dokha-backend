@@ -1,4 +1,4 @@
-package com.dokhabackend.dokha.service
+package com.dokhabackend.dokha.service.dictionary
 
 import com.dokhabackend.dokha.entity.dictionary.Store
 import com.dokhabackend.dokha.repository.dictionary.StoreRepository
@@ -17,4 +17,10 @@ class StoreServiceImpl
     override fun findById(id: Long) = storeRepository.findById(id)
 
     override fun findAll(): Collection<Store> = storeRepository.findAll()
+
+    override fun findByPlaceReservationId(placeId: Long): Store {
+        val store = storeRepository.findByPlaceReservationId(placeId)
+
+        return store.orElseThrow { throw IllegalStateException("not found") }
+    }
 }

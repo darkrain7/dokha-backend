@@ -15,7 +15,7 @@ data class TimetableConfig(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long?,
+        val id: Long = 0,
 
         @Column(name = "start_time")
         val startTime: Long,

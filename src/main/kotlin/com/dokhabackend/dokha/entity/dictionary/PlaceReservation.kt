@@ -16,7 +16,7 @@ data class PlaceReservation(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long?,
+        val id: Long = 0,
 
         @Column(name = "description")
         val description: String,

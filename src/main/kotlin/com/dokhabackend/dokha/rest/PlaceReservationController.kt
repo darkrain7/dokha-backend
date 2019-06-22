@@ -3,7 +3,7 @@ package com.dokhabackend.dokha.rest
 import com.dokhabackend.dokha.converter.dictionary.PlaceReservationToPlaceReservationDtoConverter
 import com.dokhabackend.dokha.core.RestResponse
 import com.dokhabackend.dokha.dto.dictionary.PlaceReservationDto
-import com.dokhabackend.dokha.service.PlaceReservationService
+import com.dokhabackend.dokha.service.dictionary.PlaceReservationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping

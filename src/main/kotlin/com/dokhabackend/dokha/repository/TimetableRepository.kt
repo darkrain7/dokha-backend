@@ -3,6 +3,7 @@ package com.dokhabackend.dokha.repository
 import com.dokhabackend.dokha.entity.Timetable
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 
 
 /**
@@ -13,4 +14,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface TimetableRepository : CrudRepository<Timetable, Long> {
+
+    fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: Long) : Optional<Timetable>
 }

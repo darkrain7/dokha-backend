@@ -1,6 +1,6 @@
 package com.dokhabackend.dokha.entity
 
-import com.dokhabackend.dokha.entity.dictionary.TimetableConfig
+import com.dokhabackend.dokha.entity.dictionary.Store
 import javax.persistence.*
 
 
@@ -16,17 +16,21 @@ data class Timetable(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long?,
-
-        @Column(name = "isWorkingDay")
-        val workingDay: Boolean,
-
-        @Column(name = "working_date")
-        val workingDate: Long,
+        val id: Long = 0,
 
         @Column(name = "start_date")
         val startDate: Long,
 
         @Column(name = "end_date")
-        val endDate: Long
+        val endDate: Long,
+
+        @Column(name = "working_date")
+        val workingDate: Long,
+
+        @Column(name = "working_day")
+        val workingDay: Boolean,
+
+        @ManyToOne
+        @JoinColumn(name = "store_id")
+        val store: Store
 )

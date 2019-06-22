@@ -1,0 +1,17 @@
+set search_path = dokha;
+
+INSERT INTO s_store(id, name, location)
+VALUES (-1, 'testName', 'testLocation');
+
+INSERT INTO s_place_reservation(id, description, seats_count, store_id)
+VALUES (-1, 'test discription', 5, -1);
+
+INSERT INTO s_day_of_week(id, name)
+VALUES (-1, 'Суббота');
+
+INSERT INTO s_timetable_config(id, start_time, end_time, day_of_week_id, store_id)
+VALUES (-1, 1, 10000000, -1, -1);
+
+INSERT INTO timetable(id, start_date, end_date, working_date, working_day, store_id)
+VALUES (-1, 1, 10000000, 2000000, TRUE, -1);
+

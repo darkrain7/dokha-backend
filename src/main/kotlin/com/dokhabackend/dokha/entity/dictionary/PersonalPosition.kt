@@ -17,7 +17,7 @@ data class PersonalPosition(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long?,
+        val id: Long = 0,
 
         @Column(name = "name")
         val name: String
