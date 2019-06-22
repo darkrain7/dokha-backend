@@ -23,7 +23,7 @@ data class Reservation(
 
         @ManyToOne
         @JoinColumn(name = "userId")
-        val user: User,
+        val user: User?,
 
         @ManyToOne
         @JoinColumn(name = "timetable_id")

@@ -1,8 +1,11 @@
 package com.dokhabackend.dokha.service
 
+import com.dokhabackend.dokha.Util.Util
 import com.dokhabackend.dokha.dto.ReservationDto
 import com.dokhabackend.dokha.entity.Reservation
+import com.dokhabackend.dokha.entity.Timetable
 import com.dokhabackend.dokha.repository.ReservationRepository
+import com.dokhabackend.dokha.service.dictionary.PlaceReservationService
 import com.dokhabackend.dokha.service.dictionary.StoreService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -12,6 +15,7 @@ import java.util.*
 class ReservationServiceImpl
 @Autowired constructor(val reservationRepository: ReservationRepository,
                        val timetableService: TimetableService,
+                       val placeReservationService: PlaceReservationService,
                        val storeService: StoreService) : ReservationService {
 
     override fun findByPlaceReservationIdAndReserveTime(placeId: Long, reservationTime: Long): Reservation {
@@ -22,19 +26,36 @@ class ReservationServiceImpl
 
         val store = storeService.findByPlaceReservationId(placeId)
 
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.time = Date(reservationDate)
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
+        val truncDate = Util().truncDate(reservationDate)
 
         //вытаскиваем расписание на текущий день
-        val timetable = timetableService.findByStoreIdAndWorkingDate(store.id, calendar.timeInMillis)
+        val timetable = timetableService.findByStoreIdAndWorkingDate(store.id, truncDate)
 
+        //Вытаскиваем все брони на текущий день
+        val allReservesOnCurrentDay = findByPlaceIdAndDate(placeId, truncDate)
 
-        val allReservesOnCurrentDay = findByPlaceIdAndDate(placeId, calendar.timeInMillis)
+        val halfHour = Calendar.getInstance()
+        halfHour.set(Calendar.MINUTE, 30)
 
-        return Collections.emptyList()
+        val freeReservation = Collections.emptyList<Reservation>()
+
+        for (time in timetable.startDate..timetable.endDate step halfHour.timeInMillis) {
+
+            if (allReservesOnCurrentDay.any { it.reservationTime == time }) continue
+
+            freeReservation.add(buildReservation(placeId, timetable, time))
+        }
+
+        return freeReservation
+    }
+
+    private fun buildReservation(placeId: Long, timetable: Timetable, time: Long): Reservation {
+        return Reservation(
+                placeReservation = placeReservationService.findById(placeId),
+                user = null,
+                timetable = timetable,
+                reservationTime = time
+        )
     }
 
     override fun reserve(reservationDto: ReservationDto): Reservation {
