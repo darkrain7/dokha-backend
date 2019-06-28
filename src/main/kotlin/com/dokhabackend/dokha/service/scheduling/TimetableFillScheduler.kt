@@ -1,6 +1,7 @@
 package com.dokhabackend.dokha.service.scheduling
 
 import com.dokhabackend.dokha.service.TimetableService
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.util.*
@@ -9,14 +10,16 @@ import java.util.*
  * Created by SemenovAE on 28.06.2019
 
  */
-
+private val logger = KotlinLogging.logger {}
 
 @Component
-
 class TimetableFillScheduler
 @Autowired constructor(val timetableService: TimetableService) {
 
+
     fun fillTimetable() {
+
+        logger.info { "Ура у меня есть логер" }
 
         val nextSevenDays = Calendar.getInstance()
         nextSevenDays.set(Calendar.HOUR_OF_DAY, 0)
