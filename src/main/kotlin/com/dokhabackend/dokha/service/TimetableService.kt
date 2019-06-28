@@ -1,5 +1,6 @@
 package com.dokhabackend.dokha.service
 
+import com.dokhabackend.dokha.dto.TimetableDto
 import com.dokhabackend.dokha.entity.Timetable
 
 
@@ -11,4 +12,8 @@ import com.dokhabackend.dokha.entity.Timetable
 interface TimetableService {
 
     fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: Long): Timetable
+
+    fun findAfterCurrentDate(): Collection<Timetable>
+
+    fun create(timetableDto: TimetableDto): Timetable
 }

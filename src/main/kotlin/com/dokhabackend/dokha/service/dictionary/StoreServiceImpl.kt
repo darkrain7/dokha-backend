@@ -14,7 +14,7 @@ class StoreServiceImpl
     @PreAuthorize("hasAuthority('ADMIN')")
     override fun create(store: Store): Store = storeRepository.save(store)
 
-    override fun findById(id: Long) = storeRepository.findById(id)
+    override fun findById(id: Long) = storeRepository.findById(id).orElseThrow { Exception("not found") }
 
     override fun findAll(): Collection<Store> = storeRepository.findAll()
 
