@@ -14,7 +14,7 @@ interface StoreService {
 
     fun create(store: Store): Store
 
-    fun findById(id: Long): Optional<Store>
+    fun findById(id: Long): Store
 
     fun findAll(): Collection<Store>
 
