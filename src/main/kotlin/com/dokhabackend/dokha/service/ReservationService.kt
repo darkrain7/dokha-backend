@@ -15,8 +15,6 @@ interface ReservationService {
 
     fun findByPlaceReservationId(placeId: Long): Collection<Reservation>
 
-    fun findByPlaceReservationIdAndReserveTime(placeId: Long, reservationTime: Long): Reservation
-
     fun findByPlaceIdAndDate(placeId: Long, date: Long) : Collection<Reservation>
 
     fun findFreeReservation(placeId: Long, reservationDate: Long): Collection<Reservation>

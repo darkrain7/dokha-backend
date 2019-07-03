@@ -22,4 +22,13 @@ interface ReservationRepository : CrudRepository<Reservation, Long> {
             " WHERE t.working_date = :workingDate" +
             " AND r.place_id = :placeId", nativeQuery = true)
     fun findByPlaceIdAndDate(@Param("placeId") placeId: Long, @Param("workingDate") workingDate: Long): Collection<Reservation>
+
+    @Query(value = "SELECT *" +
+            " FROM reservation r" +
+            " WHERE r.reservation_time >= :startTime AND " +
+            " r.reservation_time <= :endTime" +
+            " AND place_id = :placeId ", nativeQuery = true)
+    fun findByPlaceIdAndDateInterval(@Param("placeId") placeId: Long,
+                                     @Param("startTime") startTime: Long,
+                                     @Param("endTime") endTime: Long): Collection<Reservation>
 }
