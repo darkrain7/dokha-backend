@@ -23,6 +23,9 @@ data class Store(
         @Column(name = "location")
         val location: String,
 
+        @Column(name = "photo")
+        val photo: ByteArray,
+
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
         val placeReservations: Collection<PlaceReservation>
 )
