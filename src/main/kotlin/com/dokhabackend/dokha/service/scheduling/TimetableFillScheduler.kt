@@ -36,8 +36,10 @@ class TimetableFillScheduler
                 .map { it.value.maxBy { timetable -> timetable.workingDate } }
 
         map.forEach {
+        //TODO Подумать
+            val startTime: Long = if (it?.workingDay == null) Date().time else it.workingDate
 
-            for (currentDay in it?.workingDate!!..nextSevenDays.timeInMillis step step.timeInMillis) {
+            for (currentDay in startTime..nextSevenDays.timeInMillis step step.timeInMillis) {
                 val defaultTimetable = timetableService.generateDefaultTimetable(currentDay, it.store.id)
 
                 timetableService.create(defaultTimetable)
