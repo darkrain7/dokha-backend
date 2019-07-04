@@ -1,8 +1,10 @@
 package com.dokhabackend.dokha.repository.dictionary
 
+import com.dokhabackend.dokha.entity.dictionary.DayOfWeek
 import com.dokhabackend.dokha.entity.dictionary.TimetableConfig
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 
 
 /**
@@ -13,4 +15,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface TimetableConfigRepository : CrudRepository<TimetableConfig, Long> {
+
+    fun findByDayOfWeekAndStoreId(dawOfWeek: DayOfWeek, storeId: Long) : Optional<TimetableConfig>
 }

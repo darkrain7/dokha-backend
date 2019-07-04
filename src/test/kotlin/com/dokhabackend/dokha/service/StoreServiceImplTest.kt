@@ -48,7 +48,7 @@ class StoreServiceImplTest {
     @Test
     @Sql(value = ["/store/storeTestData"])
     fun findById() {
-        val store = storeService.findById(-1).get()
+        val store = storeService.findById(-1)
 
         assertEquals(-1L, store.id)
         assertEquals("testName", store.name)

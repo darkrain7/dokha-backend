@@ -25,7 +25,7 @@ class StoreController @Autowired constructor(val storeToStoreDtoConverter: Store
 
         val store = storeService.findById(id)
 
-        return RestResponse(storeToStoreDtoConverter.convert(store.get()))
+        return RestResponse(storeToStoreDtoConverter.convert(store))
     }
 
     @GetMapping(value = ["/findAll"])

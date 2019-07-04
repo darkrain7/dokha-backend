@@ -22,7 +22,7 @@ constructor(val toReservationDtoConverter: ReservationToReservationDtoConverter)
                     id = fromObject.id,
                     description = fromObject.description,
                     seatsCount = fromObject.seatsCount,
-                    storeId = fromObject.store.id!!,
+                    storeId = fromObject.store.id,
                     reservations = toReservationDtoConverter.convertToList(fromObject.reservations)
             )
 }

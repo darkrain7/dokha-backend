@@ -16,4 +16,8 @@ interface TimetableService {
     fun findAfterCurrentDate(): Collection<Timetable>
 
     fun create(timetableDto: TimetableDto): Timetable
+
+    fun create(timetable: Timetable): Timetable
+
+    fun generateDefaultTimetable(day: Long, storeId: Long): Timetable
 }

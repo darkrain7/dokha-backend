@@ -35,6 +35,14 @@ class TimetableFillScheduler
                 .entries
                 .map { it.value.maxBy { timetable -> timetable.workingDate } }
 
+        map.forEach {
+
+            for (currentDay in it?.workingDate!!..nextSevenDays.timeInMillis step step.timeInMillis) {
+                val defaultTimetable = timetableService.generateDefaultTimetable(currentDay, it.store.id)
+
+                timetableService.create(defaultTimetable)
+            }
+        }
 
     }
 }

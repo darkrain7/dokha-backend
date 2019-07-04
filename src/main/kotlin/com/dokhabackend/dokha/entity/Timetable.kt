@@ -18,11 +18,11 @@ data class Timetable(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0,
 
-        @Column(name = "start_date")
-        val startDate: Long,
+        @Column(name = "start_time")
+        val startTime: Long,
 
-        @Column(name = "end_date")
-        val endDate: Long,
+        @Column(name = "end_time")
+        val endTime: Long,
 
         @Column(name = "working_date")
         val workingDate: Long,

@@ -39,7 +39,7 @@ class ReservationServiceImpl
 
         val freeReservation = Collections.emptyList<Reservation>()
 
-        for (time in timetable.startDate..timetable.endDate step halfHour.timeInMillis) {
+        for (time in timetable.startTime..timetable.endTime step halfHour.timeInMillis) {
 
             if (allReservesOnCurrentDay.any { it.reservationTime == time }) continue
 
@@ -60,7 +60,7 @@ class ReservationServiceImpl
                 startTimeOfDateCalendar.timeInMillis,
                 endTimeOfCalendar.timeInMillis)
 
-
+    return reservationsInCurrentDate.first()
     }
 
     private fun getStartTimeOfDateCalendar(date: Long): Calendar {

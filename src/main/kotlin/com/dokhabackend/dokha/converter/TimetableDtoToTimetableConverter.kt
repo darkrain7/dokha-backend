@@ -19,8 +19,8 @@ class TimetableDtoToTimetableConverter
     override fun convert(fromObject: TimetableDto): Timetable =
             Timetable(
                     id = fromObject.id!!,
-                    startDate = fromObject.startDate,
-                    endDate = fromObject.endDate,
+                    startTime = fromObject.startDate,
+                    endTime = fromObject.endDate,
                     workingDate = fromObject.workingDate,
                     workingDay = fromObject.workingDay,
                     store = storeService.findById(fromObject.storeId)

@@ -16,9 +16,9 @@ class ReservationToReservationDtoConverter : AbstractConverter<Reservation, Rese
 
     override fun convert(fromObject: Reservation): ReservationDto =
             ReservationDto(
-                    id = fromObject.id!!,
-                    placeReservationId = fromObject.placeReservation.id!!,
-                    userId = fromObject.user.id!!,
+                    id = fromObject.id,
+                    placeReservationId = fromObject.placeReservation.id,
+                    userId = fromObject.user?.id!!,
                     reservationTime = fromObject.reservationTime
             )
 }
