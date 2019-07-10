@@ -36,6 +36,7 @@ class StoreServiceImplTest {
                 0,
                 name = "testName",
                 location = "testLocation",
+                photo = ByteArray(0),
                 placeReservations = Collections.emptyList())
 
         val (id, name, location) = storeService.create(store)

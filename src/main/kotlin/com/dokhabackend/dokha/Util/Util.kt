@@ -1,5 +1,6 @@
 package com.dokhabackend.dokha.Util
 
+import mu.KotlinLogging
 import java.util.*
 
 
@@ -8,6 +9,7 @@ import java.util.*
  * Created 22.06.2019
  *
  **/
+
 class Util {
 
     fun truncDate(date: Long): Long {
@@ -17,6 +19,7 @@ class Util {
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
 
         return calendar.timeInMillis
     }

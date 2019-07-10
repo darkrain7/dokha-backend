@@ -13,13 +13,15 @@ import java.util.*
  * Created by SemenovAE on 28.06.2019
 
  */
+
 private val logger = KotlinLogging.logger {}
 
 @Component
 class TimetableFillScheduler
-@Autowired constructor(val timetableService: TimetableService,
-                       val storeService: StoreService) {
+@Autowired constructor(private val timetableService: TimetableService,
+                       private val storeService: StoreService) {
 
+    private val oneDayStep = 1L * 24L * 60L * 60L * 1000L
 
     fun fillTimetable() {
 
@@ -32,17 +34,13 @@ class TimetableFillScheduler
 
         val nextSevenDays = getNexSevenDaysCalendar()
 
-        val step = Calendar.getInstance()
-        step.set(Calendar.DAY_OF_MONTH, 1)
-
-
         val timetableByStoreId = storeService.findAll()
                 .associateBy({ it.id }, { timetableService.findMaxWorkingDateByStoreId(it.id) })
                 .map { getTimetableOrDefault(it, currentTruncDate) }
 
 
         timetableByStoreId.map {
-            for (currentDayValue in (it.workingDate + step.timeInMillis)..nextSevenDays.timeInMillis step step.timeInMillis) {
+            for (currentDayValue in (it.workingDate + oneDayStep)..nextSevenDays.timeInMillis step oneDayStep) {
 
                 val timetable = buildTimetable(it, currentDayValue)
 

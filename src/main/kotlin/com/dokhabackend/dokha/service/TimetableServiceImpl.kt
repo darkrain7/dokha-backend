@@ -64,6 +64,9 @@ class TimetableServiceImpl
     override fun findMaxWorkingDateByStoreId(storeId: Long): Timetable? =
             timetableRepository.findMaxWorkingDateByStoreId(storeId)
 
+    override fun findAll(): Collection<Timetable> =
+            timetableRepository.findAll()
+
     private fun generateTimetableByConfig(config: TimetableConfig, day: Long, storeId: Long) = Timetable(
             startTime = config.startTime,
             endTime = config.endTime,

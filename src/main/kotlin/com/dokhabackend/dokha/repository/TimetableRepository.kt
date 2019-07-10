@@ -16,6 +16,8 @@ import java.util.*
 @Repository
 interface TimetableRepository : CrudRepository<Timetable, Long> {
 
+    override fun findAll(): Collection<Timetable>
+
     fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: Long): Optional<Timetable>
 
     fun findByWorkingDateAfter(workingDate: Long): Collection<Timetable>

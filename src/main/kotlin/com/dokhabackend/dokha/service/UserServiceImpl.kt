@@ -1,10 +1,10 @@
 package com.dokhabackend.dokha.service
 
 import com.dokhabackend.dokha.config.security.JwtTokenUtil
-import com.dokhabackend.dokha.core.logger
 import com.dokhabackend.dokha.entity.User
 import com.dokhabackend.dokha.repository.UserRepository
 import com.dokhabackend.dokha.security.UserRoleEnum
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
 
+private val logger = KotlinLogging.logger {}
 
 @Service
 class UserServiceImpl
@@ -25,7 +26,6 @@ class UserServiceImpl
                        private val passwordEncoder: BCryptPasswordEncoder,
                        private val authenticationManager: AuthenticationManager) : UserService, UserDetailsService {
 
-    val logger = logger()
 
     override fun login(login: String, password: String): String {
 

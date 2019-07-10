@@ -2,7 +2,6 @@ package com.dokhabackend.dokha.service
 
 import com.dokhabackend.dokha.dto.TimetableDto
 import com.dokhabackend.dokha.entity.Timetable
-import java.time.DayOfWeek
 
 
 /**
@@ -13,6 +12,8 @@ import java.time.DayOfWeek
 interface TimetableService {
 
     fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: Long): Timetable
+
+    fun findAll(): Collection<Timetable>
 
     fun findAfterCurrentDate(): Collection<Timetable>
 
