@@ -1,6 +1,9 @@
 package com.dokhabackend.dokha.service.scheduling
 
+import com.dokhabackend.dokha.Util.Util
+import com.dokhabackend.dokha.entity.Timetable
 import com.dokhabackend.dokha.service.TimetableService
+import com.dokhabackend.dokha.service.dictionary.StoreService
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -14,37 +17,61 @@ private val logger = KotlinLogging.logger {}
 
 @Component
 class TimetableFillScheduler
-@Autowired constructor(val timetableService: TimetableService) {
+@Autowired constructor(val timetableService: TimetableService,
+                       val storeService: StoreService) {
 
 
     fun fillTimetable() {
 
         logger.info { "Ура у меня есть логер" }
 
+        val currentCalendar = Calendar.getInstance()
+        currentCalendar.time = Date()
+
+        val currentTruncDate = Util().truncDate(currentCalendar.timeInMillis)
+
+        val nextSevenDays = getNexSevenDaysCalendar()
+
+        val step = Calendar.getInstance()
+        step.set(Calendar.DAY_OF_MONTH, 1)
+
+
+        val timetableByStoreId = storeService.findAll()
+                .associateBy({ it.id }, { timetableService.findMaxWorkingDateByStoreId(it.id) })
+                .map { getTimetableOrDefault(it, currentTruncDate) }
+
+
+        timetableByStoreId.map {
+            for (currentDayValue in (it.workingDate + step.timeInMillis)..nextSevenDays.timeInMillis step step.timeInMillis) {
+
+                val timetable = buildTimetable(it, currentDayValue)
+
+                timetableService.create(timetable)
+            }
+        }
+    }
+
+    private fun buildTimetable(it: Timetable, currentDayValue: Long): Timetable =
+            Timetable(
+                    startTime = it.startTime,
+                    endTime = it.endTime,
+                    workingDate = currentDayValue,
+                    workingDay = it.workingDay,
+                    store = it.store)
+
+    private fun getTimetableOrDefault(it: Map.Entry<Long, Timetable?>, currentTruncDate: Long): Timetable {
+        return if (it.value == null)
+            timetableService.generateDefaultTimetable(currentTruncDate, it.key)
+        else
+            it.value!!
+    }
+
+    private fun getNexSevenDaysCalendar(): Calendar {
         val nextSevenDays = Calendar.getInstance()
         nextSevenDays.set(Calendar.HOUR_OF_DAY, 0)
         nextSevenDays.set(Calendar.MINUTE, 0)
         nextSevenDays.set(Calendar.SECOND, 0)
         nextSevenDays.add(Calendar.DAY_OF_MONTH, 7)
-
-        val step = Calendar.getInstance()
-        step.set(Calendar.DAY_OF_MONTH, 1)
-
-        val map = timetableService.findAfterCurrentDate()
-                .groupBy { it.store }
-                .entries
-                .map { it.value.maxBy { timetable -> timetable.workingDate } }
-
-        map.forEach {
-        //TODO Подумать
-            val startTime: Long = if (it?.workingDay == null) Date().time else it.workingDate
-
-            for (currentDay in startTime..nextSevenDays.timeInMillis step step.timeInMillis) {
-                val defaultTimetable = timetableService.generateDefaultTimetable(currentDay, it.store.id)
-
-                timetableService.create(defaultTimetable)
-            }
-        }
-
+        return nextSevenDays
     }
 }

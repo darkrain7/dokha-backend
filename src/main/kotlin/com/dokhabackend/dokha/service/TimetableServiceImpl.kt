@@ -18,6 +18,7 @@ class TimetableServiceImpl
                        val timetableConfigService: TimetableConfigService,
                        val timetableConverter: TimetableDtoToTimetableConverter,
                        val storeService: StoreService) : TimetableService {
+
     override fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: Long): Timetable {
         val timetable = timetableRepository.findByStoreIdAndWorkingDate(storeId, workingDate)
 
@@ -59,6 +60,9 @@ class TimetableServiceImpl
         //TODO ПРОВЕРКИ
         return timetableRepository.save(timetable)
     }
+
+    override fun findMaxWorkingDateByStoreId(storeId: Long): Timetable? =
+            timetableRepository.findMaxWorkingDateByStoreId(storeId)
 
     private fun generateTimetableByConfig(config: TimetableConfig, day: Long, storeId: Long) = Timetable(
             startTime = config.startTime,
