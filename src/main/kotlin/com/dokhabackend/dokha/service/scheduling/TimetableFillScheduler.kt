@@ -34,12 +34,11 @@ class TimetableFillScheduler
 
         val nextSevenDays = getNexSevenDaysCalendar()
 
-        val timetableByStoreId = storeService.findAll()
+        val latestTimetableByStoreId = storeService.findAll()
                 .associateBy({ it.id }, { timetableService.findMaxWorkingDateByStoreId(it.id) })
                 .map { getTimetableOrDefault(it, currentTruncDate) }
 
-
-        timetableByStoreId.map {
+        latestTimetableByStoreId.map {
             for (currentDayValue in (it.workingDate + oneDayStep)..nextSevenDays.timeInMillis step oneDayStep) {
 
                 val timetable = buildTimetable(it, currentDayValue)
