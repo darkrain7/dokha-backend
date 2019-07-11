@@ -29,9 +29,14 @@ class UserServiceImpl
 
     override fun login(login: String, password: String): String {
 
-        val authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(login, password))
+        try {
+            val authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(login, password))
+            SecurityContextHolder.getContext().authentication = authentication
 
-        SecurityContextHolder.getContext().authentication = authentication
+        } catch (e: Exception) {
+            throw IllegalAccessError("Неверный логин\"пароль")
+        }
+
 
         val user = findByLogin(login)
 

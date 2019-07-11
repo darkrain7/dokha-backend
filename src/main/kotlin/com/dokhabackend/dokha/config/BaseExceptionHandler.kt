@@ -1,13 +1,17 @@
 package com.dokhabackend.dokha.config
 
+import com.dokhabackend.dokha.core.ErrorMessage
 import com.dokhabackend.dokha.core.RestResponse
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.core.AuthenticationException
+import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
 import javax.security.auth.message.AuthException
+import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 /**
@@ -15,7 +19,19 @@ import javax.servlet.http.HttpServletResponse
  * Контроллер для перехвата исключений
  */
 @ControllerAdvice
-class BaseExceptionHandler {
+class BaseExceptionHandler : AuthenticationEntryPoint {
+
+    /**
+     * Auth Exception handling
+     */
+    override fun commence(request: HttpServletRequest, response: HttpServletResponse, authException: AuthenticationException) {
+
+        prepareResponse(authException, response)
+
+        val jsonResponse = toJSON(RestResponse(ErrorMessage(errorText = "Пользователь не авторизован")))
+
+        writeResponse(response, jsonResponse)
+    }
 
     /**
      * Перехватчик исключений
@@ -24,27 +40,32 @@ class BaseExceptionHandler {
      * @param response  ответ
      */
     @ExceptionHandler(Exception::class)
-    fun handleException(exception: Exception?, response: HttpServletResponse?) {
-        if (exception != null && response != null) {
-            prepareResponse(exception, response)
+    fun handleException(exception: Exception, response: HttpServletResponse) {
 
-            val jsonResponse = toJSON(RestResponse<Any>(exception.message))
+        prepareResponse(exception, response)
 
-            writeResponse(response, jsonResponse)
-        }
+        val jsonResponse = toJSON(RestResponse(ErrorMessage(errorText = getErrorMessage(exception).toString())))
 
+        writeResponse(response, jsonResponse)
+    }
+
+    private fun getErrorMessage(exception: Exception): String? {
+
+        return if (exception.cause?.message == null)
+            exception.message
+        else
+            exception.cause!!.message
     }
 
     private fun toJSON(restResponse: RestResponse<Any>): String? {
         val jsonMapper = ObjectMapper()
 
-        try {
-            return jsonMapper.writeValueAsString(restResponse)
+        return try {
+            jsonMapper.writeValueAsString(restResponse)
         } catch (e: JsonProcessingException) {
             e.printStackTrace()
-            return null
+            null
         }
-
     }
 
     private fun prepareResponse(exception: Exception, response: HttpServletResponse) {
@@ -79,3 +100,4 @@ class BaseExceptionHandler {
 
     }
 }
+

@@ -8,7 +8,7 @@ package com.dokhabackend.dokha.core
 class RestResponse<T> {
 
     var data: T? = null
-    var error: String?
+    var error: ErrorMessage?
 
     val isValid: Boolean get() = data != null && error == null
 
@@ -19,7 +19,7 @@ class RestResponse<T> {
         this.error = null
     }
 
-    constructor(error: String?) : super() {
+    constructor(error: ErrorMessage) : super() {
         this.data = null
         this.error = error
     }

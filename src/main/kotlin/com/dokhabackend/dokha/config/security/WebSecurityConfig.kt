@@ -1,5 +1,6 @@
 package com.dokhabackend.dokha.config.security
 
+import com.dokhabackend.dokha.config.BaseExceptionHandler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
@@ -22,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class WebSecurityConfig
-@Autowired constructor(private val unauthorizedHandler: JwtAuthenticationEntryPoint) : WebSecurityConfigurerAdapter() {
+@Autowired constructor(private val exceptionHandler: BaseExceptionHandler) : WebSecurityConfigurerAdapter() {
 
     @Qualifier("userServiceImpl")
     @Autowired
@@ -43,9 +44,13 @@ class WebSecurityConfig
     override fun configure(http: HttpSecurity) {
         http
                 .cors().and().csrf().disable()
-                .authorizeRequests().antMatchers("/*").permitAll()
+                .authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .antMatchers("register").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+
+                .exceptionHandling().authenticationEntryPoint(exceptionHandler)
 
         http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter::class.java)
 
