@@ -1,5 +1,7 @@
 package com.dokhabackend.dokha.service.dictionary
 
+import com.dokhabackend.dokha.converter.dictionary.StoreDtoToStoreEntityConverter
+import com.dokhabackend.dokha.dto.dictionary.StoreDto
 import com.dokhabackend.dokha.entity.dictionary.Store
 import com.dokhabackend.dokha.repository.dictionary.StoreRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,19 +10,21 @@ import org.springframework.stereotype.Service
 
 @Service
 @PreAuthorize("isAuthenticated()")
-class StoreServiceImpl
-@Autowired constructor(private val storeRepository: StoreRepository) : StoreService {
+class StoreServiceImpl @Autowired constructor(
+        private val storeRepository: StoreRepository,
+        private val toEntityConverter: StoreDtoToStoreEntityConverter) : StoreService {
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    override fun create(store: Store): Store = storeRepository.save(store)
+    override fun create(store: StoreDto): Store = storeRepository.save(toEntityConverter.convert(store))
 
     override fun findById(id: Long) = storeRepository.findById(id).orElseThrow { Exception("not found") }
 
     override fun findAll(): Collection<Store> = storeRepository.findAll()
 
-    override fun findByPlaceReservationId(placeId: Long): Store {
-        val store = storeRepository.findByPlaceReservationId(placeId)
+    override fun findByPlaceReservationId(placeId: Long): Store = storeRepository.findByPlaceReservationId(placeId).orElseThrow { throw IllegalStateException("not found") }
 
-        return store.orElseThrow { throw IllegalStateException("not found") }
-    }
+    override fun update(store: StoreDto): Store = storeRepository.save(toEntityConverter.convert(store))
+
+    override fun delete(storeId: Long) = storeRepository.deleteById(storeId)
+
 }

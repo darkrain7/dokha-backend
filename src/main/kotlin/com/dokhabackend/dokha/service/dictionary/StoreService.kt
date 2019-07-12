@@ -1,7 +1,7 @@
 package com.dokhabackend.dokha.service.dictionary
 
+import com.dokhabackend.dokha.dto.dictionary.StoreDto
 import com.dokhabackend.dokha.entity.dictionary.Store
-import java.util.*
 
 
 /**
@@ -12,11 +12,15 @@ import java.util.*
 
 interface StoreService {
 
-    fun create(store: Store): Store
+    fun create(store: StoreDto): Store
 
     fun findById(id: Long): Store
 
     fun findAll(): Collection<Store>
 
     fun findByPlaceReservationId(placeId: Long): Store
+
+    fun update(store: StoreDto): Store
+
+    fun delete(storeId: Long): Unit
 }

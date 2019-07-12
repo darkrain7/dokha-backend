@@ -8,9 +8,11 @@ package com.dokhabackend.dokha.dto.dictionary
  **/
 data class StoreDto(
 
-        val id: Long,
+        val id: Long = 0,
 
         val name: String,
 
-        val location: String
+        val location: String,
+
+        val photo: ByteArray
 )
