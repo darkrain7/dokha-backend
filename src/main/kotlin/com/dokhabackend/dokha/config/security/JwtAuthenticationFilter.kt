@@ -21,9 +21,15 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
 
     override fun doFilterInternal(req: HttpServletRequest, res: HttpServletResponse, chain: FilterChain) {
         val header = req.getHeader(HEADER_STRING)
+        val uri = req.requestURI
 
-        if (header == null || header.isEmpty()) {
-            throw AuthenticationException("Вася а где токен?")
+        if (uri.contains("register") || uri.contains("login")) {
+
+        } else {
+
+            if (header == null || header.isEmpty()) {
+                throw AuthenticationException("Вася а где токен?")
+            }
         }
 
         chain.doFilter(req, res)

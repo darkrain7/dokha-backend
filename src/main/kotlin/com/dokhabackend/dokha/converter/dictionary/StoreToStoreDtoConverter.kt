@@ -16,5 +16,6 @@ class StoreToStoreDtoConverter : AbstractConverter<Store, StoreDto>() {
     override fun convert(fromObject: Store): StoreDto =
             StoreDto(id = fromObject.id,
                     name = fromObject.name,
-                    location = fromObject.location)
+                    location = fromObject.location,
+                    photo = fromObject.photo)
 }

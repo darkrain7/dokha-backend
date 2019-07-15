@@ -1,6 +1,6 @@
 package com.dokhabackend.dokha.service
 
-import com.dokhabackend.dokha.entity.dictionary.Store
+import com.dokhabackend.dokha.dto.dictionary.StoreDto
 import com.dokhabackend.dokha.service.dictionary.StoreService
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 /**
  * Semenov A.E.
@@ -32,12 +31,10 @@ class StoreServiceImplTest {
     @Test
     fun create() {
 
-        val store = Store(
-                0,
+        val store = StoreDto(
                 name = "testName",
                 location = "testLocation",
-                photo = ByteArray(0),
-                placeReservations = Collections.emptyList())
+                photo = ByteArray(0))
 
         val (id, name, location) = storeService.create(store)
 

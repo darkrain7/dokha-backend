@@ -17,14 +17,16 @@ class StoreServiceImpl @Autowired constructor(
     @PreAuthorize("hasAuthority('ADMIN')")
     override fun create(store: StoreDto): Store = storeRepository.save(toEntityConverter.convert(store))
 
-    override fun findById(id: Long) = storeRepository.findById(id).orElseThrow { Exception("not found") }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    override fun update(store: StoreDto): Store = storeRepository.save(toEntityConverter.convert(store))
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    override fun delete(storeId: Long) = storeRepository.deleteById(storeId)
+
+    override fun findById(id: Long): Store = storeRepository.findById(id).orElseThrow { Exception("not found") }
 
     override fun findAll(): Collection<Store> = storeRepository.findAll()
 
     override fun findByPlaceReservationId(placeId: Long): Store = storeRepository.findByPlaceReservationId(placeId).orElseThrow { throw IllegalStateException("not found") }
-
-    override fun update(store: StoreDto): Store = storeRepository.save(toEntityConverter.convert(store))
-
-    override fun delete(storeId: Long) = storeRepository.deleteById(storeId)
 
 }

@@ -45,11 +45,9 @@ class WebSecurityConfig
         http
                 .cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .antMatchers("register").permitAll()
+                .antMatchers("/login", "/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
-
                 .exceptionHandling().authenticationEntryPoint(exceptionHandler)
 
         http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter::class.java)

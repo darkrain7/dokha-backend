@@ -6,6 +6,7 @@ import com.dokhabackend.dokha.dto.dictionary.StoreDto
 import com.dokhabackend.dokha.service.dictionary.StoreService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 
 /**
@@ -34,6 +35,14 @@ class StoreController @Autowired constructor(val storeToStoreDtoConverter: Store
         val stores = storeService.findAll()
 
         return RestResponse(storeToStoreDtoConverter.convertToList(stores))
+    }
+
+    @PostMapping
+    fun create(@RequestBody storeDto: StoreDto): RestResponse<StoreDto> {
+
+        val store = storeService.create(storeDto)
+
+        return RestResponse(storeToStoreDtoConverter.convert(store))
     }
 
 }
