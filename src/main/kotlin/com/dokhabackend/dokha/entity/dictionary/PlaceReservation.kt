@@ -28,6 +28,6 @@ data class PlaceReservation(
         @JoinColumn(name = "store_id")
         val store: Store,
 
-        @OneToMany
+        @OneToMany(mappedBy = "placeReservation")
         val reservations : Collection<Reservation>
 )

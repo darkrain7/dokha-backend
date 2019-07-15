@@ -1,6 +1,6 @@
 package com.dokhabackend.dokha.service.scheduling
 
-import com.dokhabackend.dokha.Util.Util
+import com.dokhabackend.dokha.util.Util
 import com.dokhabackend.dokha.entity.Timetable
 import com.dokhabackend.dokha.service.TimetableService
 import com.dokhabackend.dokha.service.dictionary.StoreService

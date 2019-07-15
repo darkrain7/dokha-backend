@@ -1,6 +1,5 @@
-package com.dokhabackend.dokha.Util
+package com.dokhabackend.dokha.util
 
-import mu.KotlinLogging
 import java.util.*
 
 

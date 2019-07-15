@@ -1,6 +1,6 @@
 package com.dokhabackend.dokha.service
 
-import com.dokhabackend.dokha.Util.Util
+import com.dokhabackend.dokha.util.Util
 import com.dokhabackend.dokha.dto.ReservationDto
 import com.dokhabackend.dokha.entity.Reservation
 import com.dokhabackend.dokha.entity.Timetable
