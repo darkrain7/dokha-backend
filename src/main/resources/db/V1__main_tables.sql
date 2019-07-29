@@ -1,1 +1,0 @@
-INSERT INTO s_store(name, location, photo) VALUES ('Dokha 1', 'пр. Ленина 34', io_import('/photo/test.jpg'))

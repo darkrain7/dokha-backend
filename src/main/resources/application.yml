@@ -9,11 +9,18 @@ spring:
     username: dokha
     password: dokha
     url: jdbc:postgresql://localhost:5432/dokha
-  flyway:
-    schemas: dokha
+  liquibase:
+    contexts: production,test
+    change-log: classpath:db/changelog/changelog.xml
+    default-schema: dokha
   jpa:
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
 
 jwt:
   signingKey: dokha42
