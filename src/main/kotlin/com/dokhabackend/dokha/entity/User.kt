@@ -25,7 +25,7 @@ data class User(
         val password: String,
 
         @ElementCollection(targetClass = UserRoleEnum::class, fetch = FetchType.EAGER)
-        @CollectionTable(name = "user_role", joinColumns = [JoinColumn(name = "userId")])
+        @CollectionTable(name = "user_role", joinColumns = [JoinColumn(name = "userId")], schema = "dokha")
         @Enumerated(EnumType.ORDINAL)
         val roles: Set<UserRoleEnum>
 )
