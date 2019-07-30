@@ -1,0 +1,31 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="29-07-2019-init" author="SemenovAE" context="production">
+
+        <insert tableName="s_store">
+            <column name="id" valueNumeric="1"/>
+            <column name="location" value="пр. Ленина 34"/>
+            <column name="name" value="Dokha 1"/>
+            <column name="photo" valueBlobFile="data/Dokha1.png"/>
+        </insert>
+
+        <insert tableName="s_store">
+            <column name="id" valueNumeric="2"/>
+            <column name="location" value="ул. Николая-Островского 29"/>
+            <column name="name" value="Dokha 2"/>
+            <column name="photo" valueBlobFile="data/Dokha2.png"/>
+        </insert>
+
+        <insert tableName="s_store">
+            <column name="id" valueNumeric="3"/>
+            <column name="location" value="пр. Советский 25"/>
+            <column name="name" value="Dokha in FERMA"/>
+            <column name="photo" valueBlobFile="data/ferm.png"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

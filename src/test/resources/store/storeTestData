@@ -1,7 +1,7 @@
-set search_path = dokha;
+set search_path = DOKHA;
 
-INSERT INTO s_store(id, name, location)
-VALUES (-1, 'testName', 'testLocation');
+INSERT INTO DOKHA.s_store(id, name, location, photo)
+VALUES (-1, 'testName', 'testLocation', null);
 
 INSERT INTO s_store(id, name, location)
 VALUES (-2, 'testName2', 'testLocation2');

@@ -5,6 +5,14 @@
 
     <changeSet id="29-07-2019-init" author="SemenovAE" context="production">
 
+        <sqlFile
+                dbms="postgresql"
+                encoding="utf8"
+                path="data/init.sql"
+                relativeToChangelogFile="true"
+                splitStatements="false"
+                stripComments="true"/>
+
     </changeSet>
 
 </databaseChangeLog>
