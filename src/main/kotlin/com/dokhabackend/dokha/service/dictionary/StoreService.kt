@@ -23,4 +23,6 @@ interface StoreService {
     fun update(store: StoreDto): Store
 
     fun delete(storeId: Long): Unit
+
+    fun getPhotoByStoreId(storeId: Long) : ByteArray
 }

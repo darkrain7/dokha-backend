@@ -6,7 +6,6 @@ import com.dokhabackend.dokha.dto.dictionary.StoreDto
 import com.dokhabackend.dokha.service.dictionary.StoreService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
 
 
 /**
@@ -44,5 +43,8 @@ class StoreController @Autowired constructor(val storeToStoreDtoConverter: Store
 
         return RestResponse(storeToStoreDtoConverter.convert(store))
     }
+
+    @GetMapping(value = ["/photo/{id}"])
+    fun getPhotoByStoreId(@PathVariable("id") id: Long): RestResponse<ByteArray> = RestResponse(storeService.getPhotoByStoreId(id))
 
 }

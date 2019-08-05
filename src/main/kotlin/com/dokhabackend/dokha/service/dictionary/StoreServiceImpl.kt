@@ -29,4 +29,7 @@ class StoreServiceImpl @Autowired constructor(
 
     override fun findByPlaceReservationId(placeId: Long): Store = storeRepository.findByPlaceReservationId(placeId).orElseThrow { throw IllegalStateException("not found") }
 
+    override fun getPhotoByStoreId(storeId: Long): ByteArray = findById(storeId).photo
+
+
 }
