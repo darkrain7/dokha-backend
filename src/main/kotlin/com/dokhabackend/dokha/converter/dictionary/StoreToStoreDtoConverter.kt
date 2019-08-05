@@ -17,5 +17,5 @@ class StoreToStoreDtoConverter : AbstractConverter<Store, StoreDto>() {
             StoreDto(id = fromObject.id,
                     name = fromObject.name,
                     location = fromObject.location,
-                    photo = fromObject.photo)
+                    photoId = fromObject.id)
 }

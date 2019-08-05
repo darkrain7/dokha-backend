@@ -34,7 +34,7 @@ class StoreServiceImplTest {
         val store = StoreDto(
                 name = "testName",
                 location = "testLocation",
-                photo = ByteArray(0))
+                photoId = 0)
 
         val (id, name, location) = storeService.create(store)
 

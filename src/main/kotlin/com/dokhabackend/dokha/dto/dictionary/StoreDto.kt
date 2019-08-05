@@ -14,5 +14,5 @@ data class StoreDto(
 
         val location: String,
 
-        val photo: ByteArray
+        val photoId: Long
 )

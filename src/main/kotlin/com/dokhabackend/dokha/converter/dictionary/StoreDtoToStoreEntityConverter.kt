@@ -4,7 +4,9 @@ import com.dokhabackend.dokha.converter.AbstractConverter
 import com.dokhabackend.dokha.dto.dictionary.StoreDto
 import com.dokhabackend.dokha.entity.dictionary.Store
 import com.dokhabackend.dokha.service.dictionary.PlaceReservationService
+import com.dokhabackend.dokha.service.dictionary.StoreService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 
@@ -15,12 +17,13 @@ import org.springframework.stereotype.Component
  **/
 @Component
 class StoreDtoToStoreEntityConverter @Autowired constructor(
-        private val placeReservationService: PlaceReservationService)
+        private val placeReservationService: PlaceReservationService,
+        @Lazy private val storeService: StoreService)
     : AbstractConverter<StoreDto, Store>() {
     override fun convert(fromObject: StoreDto): Store =
             Store(id = fromObject.id,
                     name = fromObject.name,
                     location = fromObject.location,
-                    photo = fromObject.photo,
+                    photo = storeService.getPhotoByStoreId(fromObject.id),
                     placeReservations = placeReservationService.findByStoreId(fromObject.id))
 }
