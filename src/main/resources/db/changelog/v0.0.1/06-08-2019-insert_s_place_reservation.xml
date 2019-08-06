@@ -1,0 +1,41 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="06-08-2019-insert_s_place_reservation" author="SemenovAE" context="production">
+
+        <insert tableName="s_place_reservation">
+            <column name="id" valueNumeric="1"/>
+            <column name="description" value="Стол 1"/>
+            <column name="seats_count" valueNumeric="5"/>
+            <column name="store_id" valueNumeric="1"/>
+            <column name="have_game_console" valueBoolean="true"/>
+        </insert>
+
+        <insert tableName="s_place_reservation">
+            <column name="id" valueNumeric="2"/>
+            <column name="description" value="Стол 2"/>
+            <column name="seats_count" valueNumeric="3"/>
+            <column name="store_id" valueNumeric="1"/>
+            <column name="have_game_console" valueBoolean="true"/>
+        </insert>
+
+        <insert tableName="s_place_reservation">
+            <column name="id" valueNumeric="3"/>
+            <column name="description" value="Стол 3"/>
+            <column name="seats_count" valueNumeric="8"/>
+            <column name="store_id" valueNumeric="1"/>
+            <column name="have_game_console" valueBoolean="false"/>
+        </insert>
+
+        <insert tableName="s_place_reservation">
+            <column name="id" valueNumeric="4"/>
+            <column name="description" value="Стол 1"/>
+            <column name="seats_count" valueNumeric="5"/>
+            <column name="store_id" valueNumeric="2"/>
+            <column name="have_game_console" valueBoolean="false"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -14,5 +14,7 @@ data class PlaceReservationDto(
 
         val seatsCount: Int,
 
+        val haveGamingConsole : Boolean,
+
         val storeId: Long
 )

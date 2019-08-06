@@ -24,6 +24,9 @@ data class PlaceReservation(
         @Column(name = "seats_count")
         val seatsCount: Int,
 
+        @Column(name = "have_gaming_console")
+        val haveGamingConsole: Boolean,
+
         @ManyToOne
         @JoinColumn(name = "store_id")
         val store: Store,
