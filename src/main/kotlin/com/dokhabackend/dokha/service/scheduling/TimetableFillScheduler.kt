@@ -4,9 +4,9 @@ import com.dokhabackend.dokha.entity.Timetable
 import com.dokhabackend.dokha.security.UserRoleEnum
 import com.dokhabackend.dokha.service.TimetableService
 import com.dokhabackend.dokha.service.dictionary.StoreService
-import com.dokhabackend.dokha.util.Util
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.util.*
+import javax.transaction.Transactional
 
 /**
  * Created by SemenovAE on 28.06.2019
@@ -27,11 +28,12 @@ class TimetableFillScheduler
 @Autowired constructor(private val timetableService: TimetableService,
                        private val storeService: StoreService) {
 
-//    private val oneDayStep = 1L * 24L * 60L * 60L * 1000L
+    //    private val oneDayStep = 1L * 24L * 60L * 60L * 1000L
     private val oneDayStep = 1L
     private val schedulerName: String = "TimetableFiller"
 
-    //    @Scheduled(cron = "0 0 3 * * *")
+    @Scheduled(cron = "10,20,30,40,50 * * * * *")
+    @Transactional
     fun fillTimetable() {
 
         val authorities = ArrayList<GrantedAuthority>()
@@ -44,35 +46,27 @@ class TimetableFillScheduler
         val currentCalendar = Calendar.getInstance()
         currentCalendar.time = Date()
 
-        val currentTruncDate = Util().truncDate(currentCalendar.timeInMillis)
+        val currentDate = LocalDate.now()
 
         val nextSevenDays = getNexSevenDaysCalendar()
 
         val latestTimetableByStoreId = storeService.findAll()
                 .associateBy({ it.id }, { timetableService.findMaxWorkingDateByStoreId(it.id) })
-                .map { getTimetableOrDefault(it, currentTruncDate) }
+                .map { getTimetableOrDefault(it, currentDate) }
 
         latestTimetableByStoreId.map {
             for (currentDayValue in it.workingDate.toEpochDay()..nextSevenDays.toEpochDay() step oneDayStep) {
 
-                val timetable = buildTimetable(it, LocalDate.ofEpochDay(currentDayValue))
+                val timetable = timetableService.generateDefaultTimetable(currentDate, it.store.id)
 
                 timetableService.create(timetable)
             }
         }
     }
 
-    private fun buildTimetable(it: Timetable, currentDayValue: LocalDate): Timetable =
-            Timetable(
-                    startTime = it.startTime,
-                    endTime = it.endTime,
-                    workingDate = currentDayValue,
-                    workingDay = it.workingDay,
-                    store = it.store)
-
-    private fun getTimetableOrDefault(it: Map.Entry<Long, Timetable?>, currentTruncDate: Long): Timetable {
+    private fun getTimetableOrDefault(it: Map.Entry<Long, Timetable?>, currentDate: LocalDate): Timetable {
         return if (it.value == null)
-            timetableService.generateDefaultTimetable(currentTruncDate, it.key)
+            timetableService.generateDefaultTimetable(currentDate, it.key)
         else
             it.value!!
     }
@@ -83,7 +77,7 @@ class TimetableFillScheduler
         nextSevenDays.set(Calendar.MINUTE, 0)
         nextSevenDays.set(Calendar.SECOND, 0)
         nextSevenDays.add(Calendar.DAY_OF_MONTH, 7)
-        return LocalDate.from(nextSevenDays.toInstant())
+        return java.sql.Date(nextSevenDays.timeInMillis).toLocalDate()
 
     }
 }

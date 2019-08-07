@@ -14,12 +14,13 @@ create table dokha.s_store
 --Место резерва (столики)
 create table dokha.s_place_reservation
 (
-    id          bigserial not null
+    id                bigserial not null
         constraint s_place_reservation_pkey
             primary key,
-    description varchar(255),
-    seats_count integer,
-    store_id    bigint
+    description       varchar(255),
+    seats_count       integer,
+    have_game_console boolean,
+    store_id          bigint
         constraint s_place_reservation_store_fk
             references s_store
 );
@@ -40,14 +41,16 @@ create table dokha.s_timetable_config
     id             bigserial not null
         constraint s_timetable_config_pkey
             primary key,
-    end_time       time,
     start_time     time,
+    end_time       time,
     day_of_week_id bigint
         constraint s_timetable_config_day_of_week_fk
             references s_day_of_week,
     store_id       bigint
         constraint s_timetable_config_store_fk
-            references s_store
+            references s_store,
+    constraint s_timetable_config_uk
+        unique (day_of_week_id, store_id)
 );
 
 --Расписание заведения
@@ -56,13 +59,15 @@ create table dokha.timetable
     id           bigserial not null
         constraint timetable_pkey
             primary key,
-    end_time     time,
     start_time   time,
+    end_time     time,
     working_date date,
     working_day  boolean,
     store_id     bigint
         constraint timetable_store_fk
-            references s_store
+            references s_store,
+    constraint timetable_uk
+        unique (working_date, store_id)
 );
 
 --Пользователи
@@ -71,7 +76,7 @@ create table dokha."user"
     id       bigserial not null
         constraint user_pkey
             primary key,
-    login    varchar(255),
+    login    varchar(255) NOT NULL UNIQUE,
     password varchar(255)
 );
 
@@ -90,7 +95,9 @@ create table dokha.reservation
     id               bigserial not null
         constraint reservation_pkey
             primary key,
-    reservation_time bigint,
+    reservation_start_time TIMESTAMP,
+    reservation_end_time TIMESTAMP,
+    closed BOOLEAN,
     place_id         bigint
         constraint s_place_reservation_reservation_fk
             references s_place_reservation,

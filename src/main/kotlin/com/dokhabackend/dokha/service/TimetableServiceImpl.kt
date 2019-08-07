@@ -7,10 +7,13 @@ import com.dokhabackend.dokha.entity.dictionary.TimetableConfig
 import com.dokhabackend.dokha.repository.TimetableRepository
 import com.dokhabackend.dokha.service.dictionary.StoreService
 import com.dokhabackend.dokha.service.dictionary.TimetableConfigService
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.util.*
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class TimetableServiceImpl
@@ -36,19 +39,11 @@ class TimetableServiceImpl
 
     }
 
-    override fun generateDefaultTimetable(day: Long, storeId: Long): Timetable {
+    override fun generateDefaultTimetable(day: LocalDate, storeId: Long): Timetable {
 
-        val calendar = Calendar.getInstance()
-        calendar.time = Date(day)
-        val dayOfWeak = calendar.get(Calendar.DAY_OF_WEEK)
+        val config = timetableConfigService.findByDayOfWeekAndStoreId(day.dayOfWeek.value.toLong(), storeId)
 
-        val localDate = LocalDate.ofEpochDay(day)
-
-        //TODO("Адеквантный мапер")
-
-        val config = timetableConfigService.findByDayOfWeekAndStoreId(dayOfWeak.toLong(), storeId)
-
-        return generateTimetableByConfig(config, localDate, storeId)
+        return generateTimetableByConfig(config, day, storeId)
     }
 
     override fun create(timetableDto: TimetableDto): Timetable {
@@ -59,7 +54,7 @@ class TimetableServiceImpl
     }
 
     override fun create(timetable: Timetable): Timetable {
-        //TODO ПРОВЕРКИ
+        logger.info { "Создание расписания $timetable" }
         return timetableRepository.save(timetable)
     }
 

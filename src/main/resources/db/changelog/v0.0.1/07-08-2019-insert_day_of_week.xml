@@ -1,0 +1,45 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="07-08-2019-insert_day_of_week" author="SemenovAE" context="production">
+
+        <insert tableName="s_day_of_week">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Понедельник"/>
+        </insert>
+
+        <insert tableName="s_day_of_week">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="Вторник"/>
+        </insert>
+
+        <insert tableName="s_day_of_week">
+            <column name="id" valueNumeric="3"/>
+            <column name="name" value="Среда"/>
+        </insert>
+
+        <insert tableName="s_day_of_week">
+            <column name="id" valueNumeric="4"/>
+            <column name="name" value="Четверг"/>
+        </insert>
+
+        <insert tableName="s_day_of_week">
+            <column name="id" valueNumeric="5"/>
+            <column name="name" value="Пятница"/>
+        </insert>
+
+        <insert tableName="s_day_of_week">
+            <column name="id" valueNumeric="6"/>
+            <column name="name" value="Суббота"/>
+        </insert>
+
+        <insert tableName="s_day_of_week">
+            <column name="id" valueNumeric="7"/>
+            <column name="name" value="Воскрсесенье"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

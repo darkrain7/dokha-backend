@@ -2,6 +2,7 @@ package com.dokhabackend.dokha.service
 
 import com.dokhabackend.dokha.dto.TimetableDto
 import com.dokhabackend.dokha.entity.Timetable
+import java.time.LocalDate
 
 
 /**
@@ -23,5 +24,5 @@ interface TimetableService {
 
     fun create(timetable: Timetable): Timetable
 
-    fun generateDefaultTimetable(day: Long, storeId: Long): Timetable
+    fun generateDefaultTimetable(day: LocalDate, storeId: Long): Timetable
 }
