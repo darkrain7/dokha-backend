@@ -15,8 +15,8 @@ class TimetableToTimetableDtoConverter : AbstractConverter<Timetable, TimetableD
     override fun convert(fromObject: Timetable): TimetableDto =
             TimetableDto(
                     id = fromObject.id,
-                    startDate = fromObject.startTime,
-                    endDate = fromObject.endTime,
+                    startTime = fromObject.startTime,
+                    endTime = fromObject.endTime,
                     workingDate = fromObject.workingDate,
                     workingDay = fromObject.workingDay,
                     storeId = fromObject.store.id

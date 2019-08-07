@@ -3,13 +3,13 @@ package com.dokhabackend.dokha.service
 import com.dokhabackend.dokha.converter.TimetableDtoToTimetableConverter
 import com.dokhabackend.dokha.dto.TimetableDto
 import com.dokhabackend.dokha.entity.Timetable
-import com.dokhabackend.dokha.entity.dictionary.DayOfWeek
 import com.dokhabackend.dokha.entity.dictionary.TimetableConfig
 import com.dokhabackend.dokha.repository.TimetableRepository
 import com.dokhabackend.dokha.service.dictionary.StoreService
 import com.dokhabackend.dokha.service.dictionary.TimetableConfigService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.util.*
 
 @Service
@@ -42,11 +42,13 @@ class TimetableServiceImpl
         calendar.time = Date(day)
         val dayOfWeak = calendar.get(Calendar.DAY_OF_WEEK)
 
+        val localDate = LocalDate.ofEpochDay(day)
+
         //TODO("Адеквантный мапер")
 
-        val config = timetableConfigService.findByDayOfWeekAndStoreId(DayOfWeek(dayOfWeak.toLong(), name = "some name"), storeId)
+        val config = timetableConfigService.findByDayOfWeekAndStoreId(dayOfWeak.toLong(), storeId)
 
-        return generateTimetableByConfig(config, day, storeId)
+        return generateTimetableByConfig(config, localDate, storeId)
     }
 
     override fun create(timetableDto: TimetableDto): Timetable {
@@ -67,7 +69,7 @@ class TimetableServiceImpl
     override fun findAll(): Collection<Timetable> =
             timetableRepository.findAll()
 
-    private fun generateTimetableByConfig(config: TimetableConfig, day: Long, storeId: Long) = Timetable(
+    private fun generateTimetableByConfig(config: TimetableConfig, day: LocalDate, storeId: Long) = Timetable(
             startTime = config.startTime,
             endTime = config.endTime,
             workingDay = true,

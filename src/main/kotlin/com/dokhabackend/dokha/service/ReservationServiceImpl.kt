@@ -8,6 +8,7 @@ import com.dokhabackend.dokha.service.dictionary.StoreService
 import com.dokhabackend.dokha.util.Util
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.time.temporal.ChronoField
 import java.util.*
 
 
@@ -42,7 +43,10 @@ class ReservationServiceImpl
 
         val freeReservation = Collections.emptyList<Reservation>()
 
-        for (time in timetable.startTime..timetable.endTime step stepHalfHour.timeInMillis) {
+        val start = timetable.startTime.getLong(ChronoField.INSTANT_SECONDS)
+        val end = timetable.endTime.getLong(ChronoField.INSTANT_SECONDS)
+
+        for (time in start..end step stepHalfHour.timeInMillis) {
 
             if (haveIntersection(allReservesOnCurrentDay, time, hookahCount)) continue
 

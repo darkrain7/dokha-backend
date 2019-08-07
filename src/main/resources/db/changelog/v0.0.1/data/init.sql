@@ -40,8 +40,8 @@ create table dokha.s_timetable_config
     id             bigserial not null
         constraint s_timetable_config_pkey
             primary key,
-    end_time       bigint,
-    start_time     bigint,
+    end_time       time,
+    start_time     time,
     day_of_week_id bigint
         constraint s_timetable_config_day_of_week_fk
             references s_day_of_week,
@@ -56,9 +56,9 @@ create table dokha.timetable
     id           bigserial not null
         constraint timetable_pkey
             primary key,
-    end_time     bigint,
-    start_time   bigint,
-    working_date bigint,
+    end_time     time,
+    start_time   time,
+    working_date date,
     working_day  boolean,
     store_id     bigint
         constraint timetable_store_fk

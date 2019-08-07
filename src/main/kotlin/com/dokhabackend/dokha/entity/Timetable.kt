@@ -1,6 +1,8 @@
 package com.dokhabackend.dokha.entity
 
 import com.dokhabackend.dokha.entity.dictionary.Store
+import java.time.LocalDate
+import java.time.LocalTime
 import javax.persistence.*
 
 
@@ -18,14 +20,17 @@ data class Timetable(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0,
 
+        @Basic
         @Column(name = "start_time")
-        val startTime: Long,
+        val startTime: LocalTime,
 
+        @Basic
         @Column(name = "end_time")
-        val endTime: Long,
+        val endTime: LocalTime,
 
+        @Basic
         @Column(name = "working_date")
-        val workingDate: Long,
+        val workingDate: LocalDate,
 
         @Column(name = "working_day")
         val workingDay: Boolean,

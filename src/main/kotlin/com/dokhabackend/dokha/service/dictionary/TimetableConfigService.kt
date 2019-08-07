@@ -1,6 +1,5 @@
 package com.dokhabackend.dokha.service.dictionary
 
-import com.dokhabackend.dokha.entity.dictionary.DayOfWeek
 import com.dokhabackend.dokha.entity.dictionary.TimetableConfig
 
 /**
@@ -10,5 +9,5 @@ import com.dokhabackend.dokha.entity.dictionary.TimetableConfig
 
 interface TimetableConfigService {
 
-    fun findByDayOfWeekAndStoreId(dawOfWeek: DayOfWeek, storeId: Long): TimetableConfig
+    fun findByDayOfWeekAndStoreId(dawOfWeekId: Long, storeId: Long): TimetableConfig
 }

@@ -1,5 +1,6 @@
 package com.dokhabackend.dokha.entity.dictionary
 
+import java.time.LocalTime
 import javax.persistence.*
 
 
@@ -17,11 +18,13 @@ data class TimetableConfig(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0,
 
+        @Basic
         @Column(name = "start_time")
-        val startTime: Long,
+        val startTime: LocalTime,
 
+        @Basic
         @Column(name = "end_time")
-        val endTime: Long,
+        val endTime: LocalTime,
 
         @ManyToOne
         @JoinColumn(name = "day_of_week_id")

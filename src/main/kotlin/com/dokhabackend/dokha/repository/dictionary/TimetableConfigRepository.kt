@@ -16,5 +16,5 @@ import java.util.*
 @Repository
 interface TimetableConfigRepository : CrudRepository<TimetableConfig, Long> {
 
-    fun findByDayOfWeekAndStoreId(dawOfWeek: DayOfWeek, storeId: Long) : Optional<TimetableConfig>
+    fun findByDayOfWeekIdAndStoreId(dawOfWeekId: Long, storeId: Long) : Optional<TimetableConfig>
 }
