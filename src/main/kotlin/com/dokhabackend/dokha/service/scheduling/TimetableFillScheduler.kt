@@ -32,7 +32,7 @@ class TimetableFillScheduler
     private val oneDayStep = 1L
     private val schedulerName: String = "TimetableFiller"
 
-    @Scheduled(cron = "10,20,30,40,50 * * * * *")
+//    @Scheduled(cron = "10,20,30,40,50 * * * * *")
     @Transactional
     fun fillTimetable() {
 
