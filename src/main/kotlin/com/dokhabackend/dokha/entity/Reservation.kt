@@ -25,10 +25,12 @@ data class Reservation(
         @JoinColumn(name = "userId")
         val user: User?,
 
-        @ManyToOne
-        @JoinColumn(name = "timetable_id")
-        val timetable: Timetable?,
+        @Column(name = "reservation_start_time")
+        val reservationStartTime: Long,
 
-        @Column(name = "reservation_time")
-        val reservationTime: Long
+        @Column(name = "reservation_end_time")
+        val reservationEndTime: Long,
+
+        @Column(name = "closed")
+        val closed: Boolean
 )

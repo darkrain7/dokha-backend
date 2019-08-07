@@ -1,15 +1,15 @@
 package com.dokhabackend.dokha.service
 
-import com.dokhabackend.dokha.util.Util
 import com.dokhabackend.dokha.dto.ReservationDto
 import com.dokhabackend.dokha.entity.Reservation
-import com.dokhabackend.dokha.entity.Timetable
 import com.dokhabackend.dokha.repository.ReservationRepository
 import com.dokhabackend.dokha.service.dictionary.PlaceReservationService
 import com.dokhabackend.dokha.service.dictionary.StoreService
+import com.dokhabackend.dokha.util.Util
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
+
 
 @Service
 class ReservationServiceImpl
@@ -19,10 +19,13 @@ class ReservationServiceImpl
                        val storeService: StoreService)
     : ReservationService {
 
+
+    private val tarif: Long = 5400 //60*60*1.5 = 1.5 часа. пока хардкод а то лень пиздец=\
+
     /**
      * Генерирует "свободные" варианты для брони
      */
-    override fun findFreeReservation(placeId: Long, reservationDate: Long): Collection<Reservation> {
+    override fun findFreeReservation(placeId: Long, reservationDate: Long, hookahCount: Long): Collection<Reservation> {
 
         val store = storeService.findByPlaceReservationId(placeId)
 
@@ -34,33 +37,41 @@ class ReservationServiceImpl
         //Вытаскиваем все брони на текущий день
         val allReservesOnCurrentDay = findByPlaceIdAndDate(placeId, truncDate)
 
-        val halfHour = Calendar.getInstance()
-        halfHour.set(Calendar.MINUTE, 30)
+        val stepHalfHour = Calendar.getInstance()
+        stepHalfHour.set(Calendar.MINUTE, 30)
 
         val freeReservation = Collections.emptyList<Reservation>()
 
-        for (time in timetable.startTime..timetable.endTime step halfHour.timeInMillis) {
+        for (time in timetable.startTime..timetable.endTime step stepHalfHour.timeInMillis) {
 
-            if (allReservesOnCurrentDay.any { it.reservationTime == time }) continue
+            if (haveIntersection(allReservesOnCurrentDay, time, hookahCount)) continue
 
-            freeReservation.add(buildReservation(placeId, timetable, time))
+            freeReservation.add(buildReservation(placeId, time, hookahCount))
         }
 
         return freeReservation
     }
 
+    private fun haveIntersection(allReservesOnCurrentDay: Collection<Reservation>, time: Long, hookahCount: Long): Boolean {
+        if (allReservesOnCurrentDay.any {
+                    (it.reservationStartTime..it.reservationEndTime).containsNotInclusive(time)
+                            || (it.reservationStartTime..it.reservationEndTime).containsNotInclusive(time + (tarif * hookahCount))
+                }) return true
+        return false
+    }
+
     override fun reserve(reservationDto: ReservationDto): Reservation {
 
-        val startTimeOfDateCalendar = getStartTimeOfDateCalendar(reservationDto.reservationTime)
+        val startTimeOfDateCalendar = getStartTimeOfDateCalendar(reservationDto.reservationStartTime)
 
-        val endTimeOfCalendar = getEndTimeOfCalendar(reservationDto.reservationTime)
+        val endTimeOfCalendar = getEndTimeOfCalendar(reservationDto.reservationStartTime)
 
         val reservationsInCurrentDate = reservationRepository.findByPlaceIdAndDateInterval(
                 reservationDto.placeReservationId,
                 startTimeOfDateCalendar.timeInMillis,
                 endTimeOfCalendar.timeInMillis)
 
-    return reservationsInCurrentDate.first()
+        return reservationsInCurrentDate.first()
     }
 
     private fun getStartTimeOfDateCalendar(date: Long): Calendar {
@@ -97,12 +108,15 @@ class ReservationServiceImpl
     override fun findByPlaceIdAndDate(placeId: Long, date: Long): Collection<Reservation> =
             reservationRepository.findByPlaceIdAndDate(placeId, date)
 
-    private fun buildReservation(placeId: Long, timetable: Timetable, time: Long): Reservation {
+    private fun buildReservation(placeId: Long, time: Long, hookahCount: Long): Reservation {
         return Reservation(
                 placeReservation = placeReservationService.findById(placeId),
                 user = null,
-                timetable = timetable,
-                reservationTime = time
+                reservationStartTime = time,
+                reservationEndTime = time + (hookahCount * tarif),
+                closed = false
         )
     }
+
+    fun LongRange.containsNotInclusive(value: Long): Boolean = value > this.first && value < this.last
 }

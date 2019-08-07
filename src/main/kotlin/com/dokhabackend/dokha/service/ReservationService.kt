@@ -17,7 +17,7 @@ interface ReservationService {
 
     fun findByPlaceIdAndDate(placeId: Long, date: Long) : Collection<Reservation>
 
-    fun findFreeReservation(placeId: Long, reservationDate: Long): Collection<Reservation>
+    fun findFreeReservation(placeId: Long, reservationDate: Long, hookahCount: Long): Collection<Reservation>
 
     fun reserve(reservationDto: ReservationDto): Reservation
 }

@@ -14,5 +14,9 @@ data class ReservationDto(
 
         val userId: Long,
 
-        val reservationTime: Long
+        val reservationStartTime: Long,
+
+        val reservationEndTime: Long,
+
+        val closed: Boolean
 )

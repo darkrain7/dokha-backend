@@ -20,8 +20,8 @@ class ReservationController
 @Autowired constructor(val reservationService: ReservationService,
                        val toDtoConverter: ReservationToReservationDtoConverter) {
 
-    @GetMapping
-    fun findById(@RequestParam("id") id: Long): RestResponse<ReservationDto> {
+    @GetMapping("/{id}")
+    fun findById(@PathVariable("id") id: Long): RestResponse<ReservationDto> {
 
         val reservation = reservationService.findById(id)
 
