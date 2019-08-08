@@ -1,6 +1,7 @@
 package com.dokhabackend.dokha.entity
 
 import com.dokhabackend.dokha.entity.dictionary.PlaceReservation
+import java.time.LocalDateTime
 import javax.persistence.*
 
 /**
@@ -26,10 +27,10 @@ data class Reservation(
         val user: User?,
 
         @Column(name = "reservation_start_time")
-        val reservationStartTime: Long,
+        val reservationStartTime: LocalDateTime,
 
         @Column(name = "reservation_end_time")
-        val reservationEndTime: Long,
+        val reservationEndTime: LocalDateTime,
 
         @Column(name = "closed")
         val closed: Boolean
