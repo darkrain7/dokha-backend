@@ -28,23 +28,14 @@ class TimetableFillScheduler
 @Autowired constructor(private val timetableService: TimetableService,
                        private val storeService: StoreService) {
 
-    //    private val oneDayStep = 1L * 24L * 60L * 60L * 1000L
     private val oneDayStep = 1L
     private val schedulerName: String = "TimetableFiller"
 
-//    @Scheduled(cron = "10,20,30,40,50 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     fun fillTimetable() {
 
-        val authorities = ArrayList<GrantedAuthority>()
-        authorities.add(SimpleGrantedAuthority(UserRoleEnum.ADMIN.name))
-        val auth = UsernamePasswordAuthenticationToken(schedulerName, schedulerName, authorities)
-        SecurityContextHolder.getContext().authentication = auth
-
-        logger.info { "Ура у меня есть логер" }
-
-        val currentCalendar = Calendar.getInstance()
-        currentCalendar.time = Date()
+        authTimetableFiller()
 
         val currentDate = LocalDate.now()
 
@@ -57,11 +48,18 @@ class TimetableFillScheduler
         latestTimetableByStoreId.map {
             for (currentDayValue in it.workingDate.toEpochDay()..nextSevenDays.toEpochDay() step oneDayStep) {
 
-                val timetable = timetableService.generateDefaultTimetable(currentDate, it.store.id)
+                val timetable = timetableService.generateDefaultTimetable(LocalDate.ofEpochDay(currentDayValue), it.store.id)
 
                 timetableService.create(timetable)
             }
         }
+    }
+
+    private fun authTimetableFiller() {
+        val authorities = ArrayList<GrantedAuthority>()
+        authorities.add(SimpleGrantedAuthority(UserRoleEnum.ADMIN.name))
+        val auth = UsernamePasswordAuthenticationToken(schedulerName, schedulerName, authorities)
+        SecurityContextHolder.getContext().authentication = auth
     }
 
     private fun getTimetableOrDefault(it: Map.Entry<Long, Timetable?>, currentDate: LocalDate): Timetable {

@@ -18,11 +18,9 @@ data class TimetableConfig(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0,
 
-        @Basic
         @Column(name = "start_time")
         val startTime: LocalTime,
 
-        @Basic
         @Column(name = "end_time")
         val endTime: LocalTime,
 

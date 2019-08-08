@@ -24,8 +24,5 @@ data class Store(
         val location: String,
 
         @Column(name = "photo")
-        val photo: ByteArray,
-
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
-        val placeReservations: Collection<PlaceReservation>
+        val photo: ByteArray
 )

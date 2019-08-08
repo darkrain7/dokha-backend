@@ -95,8 +95,8 @@ create table dokha.reservation
     id               bigserial not null
         constraint reservation_pkey
             primary key,
-    reservation_start_time TIMESTAMP,
-    reservation_end_time TIMESTAMP,
+    reservation_start_time time,
+    reservation_end_time time,
     closed BOOLEAN,
     place_id         bigint
         constraint s_place_reservation_reservation_fk
