@@ -22,7 +22,7 @@ class TimetableServiceImpl
                        val timetableConverter: TimetableDtoToTimetableConverter,
                        val storeService: StoreService) : TimetableService {
 
-    override fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: Long): Timetable {
+    override fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: LocalDate): Timetable {
         val timetable = timetableRepository.findByStoreIdAndWorkingDate(storeId, workingDate)
 
         return timetable.orElseThrow { throw IllegalStateException("not found") }
@@ -54,7 +54,7 @@ class TimetableServiceImpl
     }
 
     override fun create(timetable: Timetable): Timetable {
-        logger.info { "Создание расписания $timetable" }
+        logger.info { "Создание расписания ${timetable.startTime} - ${timetable.endTime}" }
         return timetableRepository.save(timetable)
     }
 

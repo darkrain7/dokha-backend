@@ -1,6 +1,7 @@
 package com.dokhabackend.dokha.service
 
 import com.dokhabackend.dokha.config.security.JwtTokenUtil
+import com.dokhabackend.dokha.dto.AuthenticationResponse
 import com.dokhabackend.dokha.entity.User
 import com.dokhabackend.dokha.repository.UserRepository
 import com.dokhabackend.dokha.security.UserRoleEnum
@@ -27,8 +28,7 @@ class UserServiceImpl
                        private val authenticationManager: AuthenticationManager) : UserService, UserDetailsService {
 
 
-    override fun login(login: String, password: String): String {
-
+    override fun login(login: String, password: String): AuthenticationResponse {
         try {
             val authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(login, password))
             SecurityContextHolder.getContext().authentication = authentication
@@ -37,11 +37,13 @@ class UserServiceImpl
             throw IllegalAccessError("Неверный логин\"пароль")
         }
 
-
         val user = findByLogin(login)
 
         logger.info("Авторизация пользователя $login")
-        return jwtTokenUtil.generateToken(user)
+
+        return AuthenticationResponse(
+                jwtTokenUtil.generateToken(user),
+                user.roles)
     }
 
     override fun register(login: String, password: String): User {

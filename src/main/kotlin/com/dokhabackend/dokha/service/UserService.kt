@@ -1,5 +1,6 @@
 package com.dokhabackend.dokha.service
 
+import com.dokhabackend.dokha.dto.AuthenticationResponse
 import com.dokhabackend.dokha.entity.User
 
 
@@ -10,7 +11,7 @@ import com.dokhabackend.dokha.entity.User
  **/
 interface UserService {
 
-    fun login(login: String, password: String): String
+    fun login(login: String, password: String): AuthenticationResponse
 
     fun register(login: String, password: String) : User
 

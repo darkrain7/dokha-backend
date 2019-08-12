@@ -18,7 +18,7 @@ class ReservationToReservationDtoConverter : AbstractConverter<Reservation, Rese
             ReservationDto(
                     id = fromObject.id,
                     placeReservationId = fromObject.placeReservation.id,
-                    userId = fromObject.user?.id!!,
+                    userId = if (fromObject.user?.id == null) 0 else fromObject.user.id,
                     reservationStartTime = fromObject.reservationStartTime,
                     reservationEndTime = fromObject.reservationEndTime,
                     closed = fromObject.closed

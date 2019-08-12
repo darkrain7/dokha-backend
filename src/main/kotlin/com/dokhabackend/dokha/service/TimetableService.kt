@@ -12,7 +12,7 @@ import java.time.LocalDate
  **/
 interface TimetableService {
 
-    fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: Long): Timetable
+    fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: LocalDate): Timetable
 
     fun findAll(): Collection<Timetable>
 
@@ -23,6 +23,5 @@ interface TimetableService {
     fun create(timetableDto: TimetableDto): Timetable
 
     fun create(timetable: Timetable): Timetable
-
     fun generateDefaultTimetable(day: LocalDate, storeId: Long): Timetable
 }

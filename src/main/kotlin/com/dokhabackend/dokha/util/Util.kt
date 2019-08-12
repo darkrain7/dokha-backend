@@ -11,7 +11,7 @@ import java.util.*
 
 class Util {
 
-    fun truncDate(date: Long): Long {
+    fun truncDate(date: Long): Calendar {
 
         val calendar: Calendar = Calendar.getInstance()
         calendar.time = Date(date)
@@ -20,6 +20,6 @@ class Util {
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
 
-        return calendar.timeInMillis
+        return calendar
     }
 }

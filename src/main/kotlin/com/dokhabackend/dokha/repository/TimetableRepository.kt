@@ -4,6 +4,7 @@ import com.dokhabackend.dokha.entity.Timetable
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
 import java.util.*
 
 
@@ -18,7 +19,7 @@ interface TimetableRepository : CrudRepository<Timetable, Long> {
 
     override fun findAll(): Collection<Timetable>
 
-    fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: Long): Optional<Timetable>
+    fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: LocalDate): Optional<Timetable>
 
     fun findByWorkingDateAfter(workingDate: Long): Collection<Timetable>
 

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.util.*
 import javax.transaction.Transactional
+import kotlin.collections.ArrayList
 
 /**
  * Created by SemenovAE on 28.06.2019
@@ -31,9 +32,12 @@ class TimetableFillScheduler
     private val oneDayStep = 1L
     private val schedulerName: String = "TimetableFiller"
 
-    @Scheduled(cron = "0 0 0 * * *")
+//    @Scheduled(cron = "0 0 0 * * *")
+//    @Scheduled(fixedDelayString = "10000")
     @Transactional
     fun fillTimetable() {
+
+        logger.info { "Запускаю обновление расписания" }
 
         authTimetableFiller()
 
@@ -45,14 +49,20 @@ class TimetableFillScheduler
                 .associateBy({ it.id }, { timetableService.findMaxWorkingDateByStoreId(it.id) })
                 .map { getTimetableOrDefault(it, currentDate) }
 
+        val createdTimetables: MutableList<Timetable> = ArrayList()
+
         latestTimetableByStoreId.map {
             for (currentDayValue in it.workingDate.toEpochDay()..nextSevenDays.toEpochDay() step oneDayStep) {
 
                 val timetable = timetableService.generateDefaultTimetable(LocalDate.ofEpochDay(currentDayValue), it.store.id)
 
-                timetableService.create(timetable)
+                val create = timetableService.create(timetable)
+                createdTimetables.add(create)
             }
         }
+
+        logger.info { "Создано новых: ${createdTimetables.size}" }
+        createdTimetables.forEach { logger.info { it } }
     }
 
     private fun authTimetableFiller() {

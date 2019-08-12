@@ -2,13 +2,16 @@ package com.dokhabackend.dokha.service
 
 import com.dokhabackend.dokha.dto.ReservationDto
 import com.dokhabackend.dokha.entity.Reservation
+import com.dokhabackend.dokha.entity.Timetable
 import com.dokhabackend.dokha.repository.ReservationRepository
 import com.dokhabackend.dokha.service.dictionary.PlaceReservationService
 import com.dokhabackend.dokha.service.dictionary.StoreService
-import com.dokhabackend.dokha.util.Util
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.time.temporal.ChronoField
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 
 
@@ -21,59 +24,66 @@ class ReservationServiceImpl
     : ReservationService {
 
 
-    private val tarif: Long = 5400 //60*60*1.5 = 1.5 часа. пока хардкод а то лень пиздец=\
+    private val tarif: Long = 5_400_000 //1000*60*60*1.5 = 1.5 часа. пока хардкод а то лень пиздец=\
 
     /**
      * Генерирует "свободные" варианты для брони
      */
-    override fun findFreeReservation(placeId: Long, reservationDate: Long, hookahCount: Long): Collection<Reservation> {
+    override fun findFreeReservation(placeId: Long, possibleStartTime: LocalDateTime): Collection<Reservation> {
 
         val store = storeService.findByPlaceReservationId(placeId)
 
-        val truncDate = Util().truncDate(reservationDate)
-
+        val date = possibleStartTime.toLocalDate()
         //вытаскиваем расписание на текущий день
-        val timetable = timetableService.findByStoreIdAndWorkingDate(store.id, truncDate)
+        val timetable = timetableService.findByStoreIdAndWorkingDate(store.id, date)
 
         //Вытаскиваем все брони на текущий день
-        val allReservesOnCurrentDay = findByPlaceIdAndDate(placeId, truncDate)
+        val allReservesOnCurrentDay = findByPlaceIdAndTimetable(placeId, date, timetable)
 
         val stepHalfHour = Calendar.getInstance()
         stepHalfHour.set(Calendar.MINUTE, 30)
+        val tarif = 5400 //60 * 60 * 1.5
+        val step = 1800 //60 * 30
 
-        val freeReservation = Collections.emptyList<Reservation>()
+        val freeReservation = mutableListOf<Reservation>()
 
-        val start = timetable.startTime.getLong(ChronoField.INSTANT_SECONDS)
-        val end = timetable.endTime.getLong(ChronoField.INSTANT_SECONDS)
+        val possibleStartTimeOfSeconds = possibleStartTime.toLocalTime().toSecondOfDay()
+        val range = (possibleStartTimeOfSeconds + tarif)..timetable.endTime.toSecondOfDay()
 
-        for (time in start..end step stepHalfHour.timeInMillis) {
+        for (possibleEndTimeOfSeconds in range step step) {
 
-            if (haveIntersection(allReservesOnCurrentDay, time, hookahCount)) continue
+            if (haveIntersection(allReservesOnCurrentDay, possibleStartTimeOfSeconds, possibleEndTimeOfSeconds)) continue
 
-            freeReservation.add(buildReservation(placeId, time, hookahCount))
+            freeReservation.add(buildReservation(placeId, possibleStartTime, possibleEndTimeOfSeconds))
         }
 
         return freeReservation
     }
 
-    private fun haveIntersection(allReservesOnCurrentDay: Collection<Reservation>, time: Long, hookahCount: Long): Boolean {
-        if (allReservesOnCurrentDay.any {
-                    (it.reservationStartTime..it.reservationEndTime).containsNotInclusive(time)
-                            || (it.reservationStartTime..it.reservationEndTime).containsNotInclusive(time + (tarif * hookahCount))
-                }) return true
-        return false
+    private fun haveIntersection(allReservesOnCurrentDay: Collection<Reservation>,
+                                 possibleStartTime: Int,
+                                 possibleEndTime: Int): Boolean {
+        return allReservesOnCurrentDay.any {
+
+            val reserveStartTime = it.reservationStartTime.toLocalTime().toSecondOfDay()
+            val reserveEndTime = it.reservationEndTime.toLocalTime().toSecondOfDay()
+            val reserveTimeRange = reserveStartTime..reserveEndTime
+
+            //время начала мб = времени конца брони
+            reserveTimeRange.containsEndInclusive(possibleStartTime)
+                    //время конца мб = времени начала брони
+                    && reserveTimeRange.containsStartInclusive(possibleEndTime)
+                    //реннж текущий брони не может содержать в себе ренжд другой брони
+                    && !(possibleStartTime..possibleEndTime).containsRange(reserveTimeRange)
+        }
     }
 
     override fun reserve(reservationDto: ReservationDto): Reservation {
 
-        val startTimeOfDateCalendar = getStartTimeOfDateCalendar(reservationDto.reservationStartTime)
-
-        val endTimeOfCalendar = getEndTimeOfCalendar(reservationDto.reservationStartTime)
-
         val reservationsInCurrentDate = reservationRepository.findByPlaceIdAndDateInterval(
                 reservationDto.placeReservationId,
-                startTimeOfDateCalendar.timeInMillis,
-                endTimeOfCalendar.timeInMillis)
+                reservationDto.reservationStartTime,
+                reservationDto.reservationEndTime)
 
         return reservationsInCurrentDate.first()
     }
@@ -109,18 +119,44 @@ class ReservationServiceImpl
     /**
      * Достает все брони по столу за указанный день
      */
-    override fun findByPlaceIdAndDate(placeId: Long, date: Long): Collection<Reservation> =
-            reservationRepository.findByPlaceIdAndDate(placeId, date)
+    override fun findByPlaceIdAndTimetable(placeId: Long, date: LocalDate, timetable: Timetable): Collection<Reservation> {
 
-    private fun buildReservation(placeId: Long, time: Long, hookahCount: Long): Reservation {
-        return Reservation(
-                placeReservation = placeReservationService.findById(placeId),
-                user = null,
-                reservationStartTime = time,
-                reservationEndTime = time + (hookahCount * tarif),
-                closed = false
-        )
+        val start = LocalDateTime.of(date, timetable.startTime)
+        val end = LocalDateTime.of(date, timetable.endTime)
+
+        return reservationRepository.findByPlaceIdAndDateInterval(placeId, start, end)
     }
 
-    fun LongRange.containsNotInclusive(value: Long): Boolean = value > this.first && value < this.last
+    private fun buildReservation(placeId: Long,
+                                 possibleStartTime: LocalDateTime,
+                                 possibleEndTime: Int): Reservation {
+
+        val reservation = Reservation(
+                placeReservation = placeReservationService.findById(placeId),
+                user = null,
+                reservationStartTime = possibleStartTime,
+                reservationEndTime = LocalDateTime.of(possibleStartTime.toLocalDate(), LocalTime.ofSecondOfDay(possibleEndTime.toLong())),
+                closed = false
+        )
+
+        return reservation
+    }
+
+}
+
+private fun IntRange.containsEndInclusive(value: Int): Boolean = value > this.first && value <= this.last
+
+private fun IntRange.containsStartInclusive(value: Int): Boolean = value >= this.first && value < this.last
+
+private fun IntRange.containsRange(value: IntRange): Boolean {
+    return this.start <= value.start && this.last >= value.last
+}
+
+
+private operator fun LocalDateTime.compareTo(value: Long): Int {
+    return when {
+        this > LocalDateTime.from(Instant.ofEpochSecond(value)) -> 1
+        this < LocalDateTime.from(Instant.ofEpochSecond(value)) -> -1
+        else -> 0
+    }
 }

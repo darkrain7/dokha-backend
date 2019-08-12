@@ -4,6 +4,7 @@ import com.dokhabackend.dokha.entity.Reservation
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
+import java.time.LocalDateTime
 
 
 /**
@@ -25,10 +26,10 @@ interface ReservationRepository : CrudRepository<Reservation, Long> {
 
     @Query(value = "SELECT *" +
             " FROM reservation r" +
-            " WHERE r.reservation_time >= :startTime AND " +
-            " r.reservation_time <= :endTime" +
+            " WHERE r.reservation_start_time >= :startTime " +
+            " AND r.reservation_end_time <= :endTime" +
             " AND place_id = :placeId ", nativeQuery = true)
     fun findByPlaceIdAndDateInterval(@Param("placeId") placeId: Long,
-                                     @Param("startTime") startTime: Long,
-                                     @Param("endTime") endTime: Long): Collection<Reservation>
+                                     @Param("startTime") startTime: LocalDateTime,
+                                     @Param("endTime") endTime: LocalDateTime): Collection<Reservation>
 }

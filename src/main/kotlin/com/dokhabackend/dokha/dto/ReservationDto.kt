@@ -1,5 +1,7 @@
 package com.dokhabackend.dokha.dto
 
+import java.time.LocalDateTime
+
 
 /**
  * Semenov A.E.
@@ -14,9 +16,9 @@ data class ReservationDto(
 
         val userId: Long,
 
-        val reservationStartTime: Long,
+        val reservationStartTime: LocalDateTime,
 
-        val reservationEndTime: Long,
+        val reservationEndTime: LocalDateTime,
 
         val closed: Boolean
 )

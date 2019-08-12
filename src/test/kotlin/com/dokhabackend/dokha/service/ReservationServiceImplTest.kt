@@ -31,7 +31,7 @@ class ReservationServiceImplTest {
 
         val currentTime = 1561187030000L
 
-        val findFreeReservation = reservationService.findFreeReservation(-1, currentTime, 2)
+//        val findFreeReservation = reservationService.findFreeReservation(-1, currentTime)
 
     }
 }

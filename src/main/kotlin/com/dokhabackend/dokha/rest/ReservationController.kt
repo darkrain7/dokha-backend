@@ -5,7 +5,14 @@ import com.dokhabackend.dokha.core.RestResponse
 import com.dokhabackend.dokha.dto.ReservationDto
 import com.dokhabackend.dokha.service.ReservationService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.util.*
 
 
 /**
@@ -28,12 +35,20 @@ class ReservationController
         return RestResponse(toDtoConverter.convert(reservation))
     }
 
-//    @GetMapping
-//    fun findByPlaceReservationId(@RequestParam("reservationId") reservationId: Long): RestResponse<Collection<ReservationDto>> {
-//
-//        val reservations = reservationService.findByPlaceReservationId(reservationId)
-//
-//        return RestResponse(toDtoConverter.convertToList(reservations))
-//    }
+    @GetMapping("/findFree/{placeReservationId}/{reservationStartTime}")
+    fun findByPlaceReservationId(@PathVariable("placeReservationId") placeReservationId: Long,
+                                 @PathVariable("reservationStartTime") reservationStartTime: Long): RestResponse<Collection<ReservationDto>> {
+
+        val calendar = Calendar.getInstance()
+        calendar.time = Date(reservationStartTime)
+
+        val localDate = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH))
+        val localTime = LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND))
+        val localDateTime = LocalDateTime.of(localDate, localTime)
+
+        val reservations = reservationService.findFreeReservation(placeReservationId, localDateTime)
+
+        return RestResponse(toDtoConverter.convertToList(reservations))
+    }
 
 }
