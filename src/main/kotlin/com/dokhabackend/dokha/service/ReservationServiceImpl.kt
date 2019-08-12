@@ -14,7 +14,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
-import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
@@ -25,7 +24,6 @@ class ReservationServiceImpl
                        val placeReservationService: PlaceReservationService,
                        val storeService: StoreService)
     : ReservationService {
-
 
     val halfHourInSec = 1800 //60 * 30 = 30min
     val tarifInSec = 5400 //60 * 60 * 1.5 = 1.5hours
@@ -74,16 +72,21 @@ class ReservationServiceImpl
         return freeReservation
     }
 
+    /**
+     * Докинет сутки если заведение заканчивает работать на след сутки
+     * LocalTime.of(00.00.00) == 0
+     */
     private fun getEndTime(timetable: Timetable, possibleStartDateTime: LocalDateTime): Int {
-        var endTime: Int = timetable.endTime.toSecondOfDay()
-        if (timetable.endTime < possibleStartDateTime.toLocalTime())
-            endTime = timetable.endTime.toSecondOfDay() + hours24InSec
-        return endTime
+        val endTime: Int = timetable.endTime.toSecondOfDay()
+
+        return if (timetable.endTime < possibleStartDateTime.toLocalTime())
+            endTime + hours24InSec
+        else endTime
     }
 
     override fun haveIntersection(allReservesOnCurrentDay: Collection<Reservation>,
-                                 possibleStartTime: Int,
-                                 possibleEndTime: Int): Boolean {
+                                  possibleStartTime: Int,
+                                  possibleEndTime: Int): Boolean {
         return allReservesOnCurrentDay.any {
 
             val reserveStartTime = it.reservationStartTime.toLocalTime().toSecondOfDay()
@@ -116,28 +119,6 @@ class ReservationServiceImpl
                 reservationDto.reservationEndTime)
 
         return reservationsInCurrentDate.first()
-    }
-
-    private fun getStartTimeOfDateCalendar(date: Long): Calendar {
-        val startTimeCalendar = Calendar.getInstance()
-
-        startTimeCalendar.time = Date(date)
-        startTimeCalendar.set(Calendar.HOUR_OF_DAY, 0)
-        startTimeCalendar.set(Calendar.MINUTE, 0)
-
-        return startTimeCalendar
-    }
-
-    private fun getEndTimeOfCalendar(date: Long): Calendar {
-
-        val endTimeCalendar = Calendar.getInstance()
-
-        endTimeCalendar.time = Date(date)
-        endTimeCalendar.set(Calendar.HOUR_OF_DAY, 22)
-        endTimeCalendar.set(Calendar.MINUTE, 59)
-        endTimeCalendar.set(Calendar.SECOND, 59)
-
-        return endTimeCalendar
     }
 
     override fun findById(id: Long): Reservation =
@@ -174,13 +155,8 @@ class ReservationServiceImpl
 }
 
 private fun IntRange.containsEndInclusive(value: Int): Boolean = value > this.first && value <= this.last
-
 private fun IntRange.containsStartInclusive(value: Int): Boolean = value >= this.first && value < this.last
-
-private fun IntRange.containsRange(value: IntRange): Boolean {
-    return this.start <= value.start && this.last >= value.last
-}
-
+private fun IntRange.containsRange(value: IntRange): Boolean = this.start <= value.start && this.last >= value.last
 
 private operator fun LocalDateTime.compareTo(value: Long): Int {
     return when {
