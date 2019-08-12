@@ -23,4 +23,6 @@ interface ReservationService {
     fun findFreeReservation(placeId: Long, possibleStartTime: LocalDateTime): Collection<Reservation>
 
     fun reserve(reservationDto: ReservationDto): Reservation
+
+    fun haveIntersection(allReservesOnCurrentDay: Collection<Reservation>, possibleStartTime: Int, possibleEndTime: Int): Boolean
 }
