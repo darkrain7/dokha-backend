@@ -10,5 +10,5 @@ data class AuthenticationResponse(
 
         val userToken: String,
 
-        val userRoles: Set<UserRoleEnum>
+        val userRoles: Set<Long>
 )

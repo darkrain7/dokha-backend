@@ -43,7 +43,7 @@ class UserServiceImpl
 
         return AuthenticationResponse(
                 jwtTokenUtil.generateToken(user),
-                user.roles)
+                user.roles.map { it.id }.toSet())
     }
 
     override fun register(login: String, password: String): User {
