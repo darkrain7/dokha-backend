@@ -32,8 +32,7 @@ class TimetableFillScheduler
     private val oneDayStep = 1L
     private val schedulerName: String = "TimetableFiller"
 
-//    @Scheduled(cron = "0 0 0 * * *")
-//    @Scheduled(fixedDelayString = "10000")
+    @Scheduled(cron = "0 30 * * * *")
     @Transactional
     fun fillTimetable() {
 
@@ -51,18 +50,21 @@ class TimetableFillScheduler
 
         val createdTimetables: MutableList<Timetable> = ArrayList()
 
-        latestTimetableByStoreId.map {
-            for (currentDayValue in it.workingDate.toEpochDay()..nextSevenDays.toEpochDay() step oneDayStep) {
+        latestTimetableByStoreId
+                .map {
+                    for (currentDayValue in it.workingDate.toEpochDay()..nextSevenDays.toEpochDay() step oneDayStep) {
 
-                val timetable = timetableService.generateDefaultTimetable(LocalDate.ofEpochDay(currentDayValue), it.store.id)
+                        val timetableAlreadyExist = timetableService.isExistByStoreIdAndWorkingDate(it.store.id, LocalDate.ofEpochDay(currentDayValue))
+                        if (timetableAlreadyExist) continue
 
-                val create = timetableService.create(timetable)
-                createdTimetables.add(create)
-            }
-        }
+                        val timetable = timetableService.generateDefaultTimetable(LocalDate.ofEpochDay(currentDayValue), it.store.id)
+
+                        val create = timetableService.create(timetable)
+                        createdTimetables.add(create)
+                    }
+                }
 
         logger.info { "Создано новых: ${createdTimetables.size}" }
-        createdTimetables.forEach { logger.info { it } }
     }
 
     private fun authTimetableFiller() {

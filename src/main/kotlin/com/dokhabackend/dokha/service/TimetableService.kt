@@ -14,6 +14,8 @@ interface TimetableService {
 
     fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: LocalDate): Timetable
 
+    fun isExistByStoreIdAndWorkingDate(storeId: Long, workingDate: LocalDate): Boolean
+
     fun findAll(): Collection<Timetable>
 
     fun findAfterCurrentDate(): Collection<Timetable>
@@ -23,5 +25,6 @@ interface TimetableService {
     fun create(timetableDto: TimetableDto): Timetable
 
     fun create(timetable: Timetable): Timetable
+
     fun generateDefaultTimetable(day: LocalDate, storeId: Long): Timetable
 }

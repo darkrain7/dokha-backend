@@ -28,6 +28,10 @@ class TimetableServiceImpl
         return timetable.orElseThrow { throw IllegalStateException("not found") }
     }
 
+    override fun isExistByStoreIdAndWorkingDate(storeId: Long, workingDate: LocalDate): Boolean =
+            timetableRepository.findByStoreIdAndWorkingDate(storeId, workingDate).isPresent
+
+
     override fun findAfterCurrentDate(): Collection<Timetable> {
 
         val calendar = Calendar.getInstance()
@@ -54,7 +58,7 @@ class TimetableServiceImpl
     }
 
     override fun create(timetable: Timetable): Timetable {
-        logger.info { "Создание расписания ${timetable.startTime} - ${timetable.endTime}" }
+        logger.info { "Создание расписания ${timetable.workingDate} ${timetable.store.name}" }
         return timetableRepository.save(timetable)
     }
 
