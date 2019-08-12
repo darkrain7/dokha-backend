@@ -35,9 +35,25 @@ class ReservationController
         return RestResponse(toDtoConverter.convert(reservation))
     }
 
+    @GetMapping("/findFree/startTime/{placeReservationId}/{reservationDate}")
+    fun findFreeReservationStartTime(@PathVariable("placeReservationId") placeReservationId: Long,
+                                     @PathVariable("reservationDate") reservationDate: Long)
+            : RestResponse<Collection<ReservationDto>> {
+
+        val calendar = Calendar.getInstance()
+        calendar.time = Date(reservationDate)
+
+        val localDate = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH))
+
+        val reservationStartTime = reservationService.findFreeReservationStartTime(placeReservationId, localDate)
+
+        return RestResponse(toDtoConverter.convertToList(reservationStartTime))
+    }
+
     @GetMapping("/findFree/{placeReservationId}/{reservationStartTime}")
-    fun findByPlaceReservationId(@PathVariable("placeReservationId") placeReservationId: Long,
-                                 @PathVariable("reservationStartTime") reservationStartTime: Long): RestResponse<Collection<ReservationDto>> {
+    fun findFreeReservation(@PathVariable("placeReservationId") placeReservationId: Long,
+                            @PathVariable("reservationStartTime") reservationStartTime: Long)
+            : RestResponse<Collection<ReservationDto>> {
 
         val calendar = Calendar.getInstance()
         calendar.time = Date(reservationStartTime)

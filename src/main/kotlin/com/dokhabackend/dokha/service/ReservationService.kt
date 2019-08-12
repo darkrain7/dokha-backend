@@ -5,6 +5,7 @@ import com.dokhabackend.dokha.entity.Reservation
 import com.dokhabackend.dokha.entity.Timetable
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 
 /**
@@ -19,6 +20,8 @@ interface ReservationService {
     fun findByPlaceReservationId(placeId: Long): Collection<Reservation>
 
     fun findByPlaceIdAndTimetable(placeId: Long, date: LocalDate, timetable: Timetable): Collection<Reservation>
+
+    fun findFreeReservationStartTime(placeId: Long, reservationDate: LocalDate): Collection<Reservation>
 
     fun findFreeReservation(placeId: Long, possibleStartDateTime: LocalDateTime): Collection<Reservation>
 

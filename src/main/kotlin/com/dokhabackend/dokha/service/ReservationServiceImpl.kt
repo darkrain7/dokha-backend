@@ -73,6 +73,38 @@ class ReservationServiceImpl
     }
 
     /**
+     * Генерит все возможные варианты времени НАЧАЛА брони
+     */
+    override fun findFreeReservationStartTime(placeId: Long, reservationDate: LocalDate): Collection<Reservation> {
+        val store = storeService.findByPlaceReservationId(placeId)
+
+        //вытаскиваем расписание на текущий день
+        val timetable = timetableService.findByStoreIdAndWorkingDate(store.id, reservationDate)
+
+        val allReservesOnCurrentDay = findByPlaceIdAndTimetable(placeId, reservationDate, timetable)
+                .filter { !it.closed }
+
+        val range = timetable.startTime.toSecondOfDay()..timetable.endTime.toSecondOfDay()
+
+        val freeStartTime = mutableListOf<Reservation>()
+
+        for (possibleStartTimeInSec in range step halfHourInSec) {
+
+            if (haveIntersection(allReservesOnCurrentDay, possibleStartTimeInSec, possibleStartTimeInSec + tarifInSec)) continue
+
+            val buildReservation = buildReservation(
+                    placeId,
+                    LocalDateTime.of(reservationDate, LocalTime.ofSecondOfDay(possibleStartTimeInSec.toLong())),
+                    possibleStartTimeInSec,
+                    possibleStartTimeInSec + tarifInSec)
+
+            freeStartTime.add(buildReservation)
+        }
+
+        return freeStartTime
+    }
+
+    /**
      * Докинет сутки если заведение заканчивает работать на след сутки
      * LocalTime.of(00.00.00) == 0
      */
