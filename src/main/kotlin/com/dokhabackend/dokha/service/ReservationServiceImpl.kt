@@ -84,7 +84,7 @@ class ReservationServiceImpl
         val allReservesOnCurrentDay = findByPlaceIdAndTimetable(placeId, reservationDate, timetable)
                 .filter { !it.closed }
 
-        val range = timetable.startTime.toSecondOfDay()..timetable.endTime.toSecondOfDay()
+        val range = timetable.startTime.toSecondOfDay()..(timetable.endTime.toSecondOfDay() - tarifInSec)
 
         val freeStartTime = mutableListOf<Reservation>()
 
