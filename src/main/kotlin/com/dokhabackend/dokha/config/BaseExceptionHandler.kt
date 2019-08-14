@@ -4,6 +4,7 @@ import com.dokhabackend.dokha.core.ErrorMessage
 import com.dokhabackend.dokha.core.RestResponse
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
+import mu.KotlinLogging
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
@@ -18,6 +19,9 @@ import javax.servlet.http.HttpServletResponse
  * @author v.butuzov
  * Контроллер для перехвата исключений
  */
+
+private val logger = KotlinLogging.logger {}
+
 @ControllerAdvice
 class BaseExceptionHandler : AuthenticationEntryPoint {
 
@@ -41,6 +45,8 @@ class BaseExceptionHandler : AuthenticationEntryPoint {
      */
     @ExceptionHandler(Exception::class)
     fun handleException(exception: Exception, response: HttpServletResponse) {
+
+        logger.error { exception }
 
         prepareResponse(exception, response)
 
