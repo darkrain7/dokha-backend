@@ -75,7 +75,7 @@ class ReservationController
         return RestResponse(toDtoConverter.convertToList(findFreeReservation))
     }
 
-    @GetMapping("/reserve")
+    @PostMapping("/reserve")
     fun reserve(@RequestBody reservationDto: ReservationDto): RestResponse<ReservationDto> {
 
         val reserve = reservationService.reserve(reservationDto)
