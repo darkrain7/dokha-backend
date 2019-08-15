@@ -193,11 +193,11 @@ class ReservationServiceImpl
             val reserveTimeRange = reserveStartTime..reserveEndTime
 
             //время начала не находится в ренжде других броней(но может совпасть с концом другой брони)
-            reserveTimeRange.containsEndInclusive(possibleStartTime)
+            reserveTimeRange.containsWithoutBoundary(possibleStartTime)
                     //время конца не находится в ренжде других броней(но может совпасть с началом другой брони)
-                    && reserveTimeRange.containsStartInclusive(possibleEndTime)
+                    || reserveTimeRange.containsWithoutBoundary(possibleEndTime)
                     //реннж текущий брони не может содержать в себе ренжд другой брони
-                    && (possibleStartTime..possibleEndTime).containsRange(reserveTimeRange)
+                    || (possibleStartTime..possibleEndTime).containsRange(reserveTimeRange)
         }
     }
 
@@ -236,6 +236,7 @@ class ReservationServiceImpl
 
 private fun IntRange.containsEndInclusive(value: Int): Boolean = value > this.first && value <= this.last
 private fun IntRange.containsStartInclusive(value: Int): Boolean = value >= this.first && value < this.last
+private fun IntRange.containsWithoutBoundary(value: Int): Boolean = value > this.first && value < this.last
 private fun IntRange.containsRange(value: IntRange): Boolean = this.start <= value.start && this.last >= value.last
 
 private operator fun LocalDateTime.compareTo(value: Long): Int {
