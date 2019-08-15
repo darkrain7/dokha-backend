@@ -6,10 +6,7 @@ import com.dokhabackend.dokha.dto.ReservationDto
 import com.dokhabackend.dokha.service.ReservationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -76,6 +73,14 @@ class ReservationController
         val findFreeReservation = reservationService.findFreeReservation(placeReservationId, reservationStartTime)
 
         return RestResponse(toDtoConverter.convertToList(findFreeReservation))
+    }
+
+    @GetMapping("/reserve")
+    fun reserve(@RequestBody reservationDto: ReservationDto): RestResponse<ReservationDto> {
+
+        val reserve = reservationService.reserve(reservationDto)
+
+        return RestResponse(toDtoConverter.convert(reserve))
     }
 
 }
