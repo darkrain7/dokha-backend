@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.*
 import java.time.temporal.ChronoUnit
 
@@ -111,6 +113,24 @@ class ReservationServiceImpl
         }
 
         return freeReservation
+    }
+
+    override fun generatePreReserveComment(reservationDto: ReservationDto): String {
+
+        val start = reservationDto.reservationStartTime.toEpochSecond(ZoneOffset.UTC)
+        val end = reservationDto.reservationEndTime.toEpochSecond(ZoneOffset.UTC)
+
+        val hookahCount = BigDecimal(end - start)
+                .divide(BigDecimal(tarifInSec), RoundingMode.CEILING)
+
+        val hookah: String
+        hookah = when {
+            hookahCount.toInt() < 1 -> "???"
+            hookahCount.toInt() == 1 -> "кальяна"
+            else -> "кальянов"
+        }
+
+        return "Данное время предусматривает заказ минимум $hookahCount $hookah"
     }
 
     /**

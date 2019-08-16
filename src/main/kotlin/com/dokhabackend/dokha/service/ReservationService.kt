@@ -5,7 +5,6 @@ import com.dokhabackend.dokha.entity.Reservation
 import com.dokhabackend.dokha.entity.Timetable
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 
 
 /**
@@ -28,4 +27,6 @@ interface ReservationService {
     fun reserve(reservationDto: ReservationDto): Reservation
 
     fun haveIntersection(allReservesOnCurrentDay: Collection<Reservation>, possibleStartTime: Int, possibleEndTime: Int): Boolean
+
+    fun generatePreReserveComment(reservationDto: ReservationDto): String
 }

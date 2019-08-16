@@ -90,6 +90,10 @@ class ReservationController
         return RestResponse(toDtoConverter.convertToList(findFreeReservation))
     }
 
+    @GetMapping("/preReserveComment")
+    fun getPreReserveComment(@RequestBody reservationDto: ReservationDto) =
+        RestResponse(reservationService.generatePreReserveComment(reservationDto))
+
     @PostMapping("/reserve")
     fun reserve(@RequestBody reservationDto: ReservationDto): RestResponse<ReservationDto> {
 
