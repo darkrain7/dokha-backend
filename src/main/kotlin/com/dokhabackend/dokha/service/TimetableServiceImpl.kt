@@ -20,13 +20,18 @@ class TimetableServiceImpl
 @Autowired constructor(val timetableRepository: TimetableRepository,
                        val timetableConfigService: TimetableConfigService,
                        val timetableConverter: TimetableDtoToTimetableConverter,
-                       val storeService: StoreService) : TimetableService {
+                       val storeService: StoreService)
+    : TimetableService {
 
-    override fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: LocalDate): Timetable {
-        val timetable = timetableRepository.findByStoreIdAndWorkingDate(storeId, workingDate)
+    override fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: LocalDate): Timetable =
+            timetableRepository.findByStoreIdAndWorkingDate(storeId, workingDate)
+                    .orElseThrow { throw IllegalStateException("На $workingDate еше не создан график работы ") }
 
-        return timetable.orElseThrow { throw IllegalStateException("not found") }
-    }
+    override fun findByStoreWorkingDateAndWorked(storeId: Long, workingDate: LocalDate): Timetable =
+            Optional.ofNullable(findByStoreIdAndWorkingDate(storeId, workingDate)
+                    .takeIf { it.workingDay })
+                    .orElseThrow { IllegalStateException("Извините но заведение в данный день не работает") }
+
 
     override fun isExistByStoreIdAndWorkingDate(storeId: Long, workingDate: LocalDate): Boolean =
             timetableRepository.findByStoreIdAndWorkingDate(storeId, workingDate).isPresent

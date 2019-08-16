@@ -23,11 +23,15 @@ class StoreServiceImpl @Autowired constructor(
     @PreAuthorize("hasAuthority('ADMIN')")
     override fun delete(storeId: Long) = storeRepository.deleteById(storeId)
 
-    override fun findById(id: Long): Store = storeRepository.findById(id).orElseThrow { Exception("not found") }
+    override fun findById(id: Long): Store =
+            storeRepository.findById(id)
+                    .orElseThrow { Exception("Заведение не найдено") }
 
     override fun findAll(): Collection<Store> = storeRepository.findAll()
 
-    override fun findByPlaceReservationId(placeId: Long): Store = storeRepository.findByPlaceReservationId(placeId).orElseThrow { throw IllegalStateException("not found") }
+    override fun findByPlaceReservationId(placeId: Long): Store =
+            storeRepository.findByPlaceReservationId(placeId)
+                    .orElseThrow { throw IllegalArgumentException("Заведение не найдено") }
 
     override fun getPhotoByStoreId(storeId: Long): ByteArray = findById(storeId).photo
 

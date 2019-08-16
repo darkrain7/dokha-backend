@@ -25,7 +25,8 @@ class UserServiceImpl
 @Autowired constructor(private val userRepository: UserRepository,
                        private val jwtTokenUtil: JwtTokenUtil,
                        private val passwordEncoder: BCryptPasswordEncoder,
-                       private val authenticationManager: AuthenticationManager) : UserService, UserDetailsService {
+                       private val authenticationManager: AuthenticationManager)
+    : UserService, UserDetailsService {
 
 
     override fun login(login: String, password: String): AuthenticationResponse {
@@ -38,7 +39,6 @@ class UserServiceImpl
         }
 
         val user = findByLogin(login)
-
         logger.info("Авторизация пользователя $login")
 
         return AuthenticationResponse(
@@ -71,38 +71,28 @@ class UserServiceImpl
                 roles)
     }
 
-    override fun findById(id: Long): User {
-        val user = userRepository.findById(id)
-
-        return user.orElseThrow { throw Exception("User Not Found") }
-    }
+    override fun findById(id: Long): User =
+            userRepository.findById(id).orElseThrow { throw IllegalArgumentException("Пользователь не найден") }
 
     override fun findAll(): Collection<User> = userRepository.findAll()
 
-    override fun findByLoginAndPassword(login: String, password: String): User {
+    override fun findByLoginAndPassword(login: String, password: String): User =
+            userRepository.findByLoginAndPassword(login, password)
+                    .orElseThrow { throw IllegalArgumentException("Пользователь не найден") }
 
-        val user = userRepository.findByLoginAndPassword(login, password)
-
-        return user.orElseThrow { throw Exception("User Not Found") }
-    }
-
-    override fun findByLogin(login: String): User {
-        val user = userRepository.findByLogin(login)
-
-        return user.orElseThrow { throw Exception("User Not Found") }
-    }
+    override fun findByLogin(login: String): User =
+            userRepository.findByLogin(login)
+                    .orElseThrow { throw IllegalArgumentException("Пользователь не найден") }
 
     override fun createUser(user: User): User {
-
         checkUserLoginExist(user)
-
         return userRepository.save(user)
     }
 
     private fun checkUserLoginExist(user: User) {
         val checkUserLogin = userRepository.findByLogin(user.login).isPresent
         if (checkUserLogin)
-            throw IllegalArgumentException("Login already exist")
+            throw IllegalArgumentException("Такой логин уже существует")
     }
 
     private fun passwordEncode(password: String) = passwordEncoder.encode(password)

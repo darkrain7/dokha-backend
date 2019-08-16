@@ -14,6 +14,8 @@ interface TimetableService {
 
     fun findByStoreIdAndWorkingDate(storeId: Long, workingDate: LocalDate): Timetable
 
+    fun findByStoreWorkingDateAndWorked(storeId: Long, workingDate: LocalDate): Timetable
+
     fun isExistByStoreIdAndWorkingDate(storeId: Long, workingDate: LocalDate): Boolean
 
     fun findAll(): Collection<Timetable>

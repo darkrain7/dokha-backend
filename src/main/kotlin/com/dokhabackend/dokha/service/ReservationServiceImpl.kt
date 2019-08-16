@@ -26,6 +26,7 @@ class ReservationServiceImpl
     : ReservationService {
 
     val halfHourInSec = 1800 //60 * 30 = 30min
+    val halfHour = 30L
     val tarifInSec = 5400 //60 * 60 * 1.5 = 1.5hours
     val hours24InSec = 86_400 // 60 * 60 * 24 = 24hours
 
@@ -36,7 +37,7 @@ class ReservationServiceImpl
         val store = storeService.findByPlaceReservationId(placeId)
 
         //вытаскиваем расписание на текущий день
-        val timetable = timetableService.findByStoreIdAndWorkingDate(store.id, reservationDate)
+        val timetable = timetableService.findByStoreWorkingDateAndWorked(store.id, reservationDate)
 
         val allReservesOnCurrentDay = findByPlaceIdAndTimetableIsOpen(placeId, reservationDate, timetable)
 
@@ -75,7 +76,7 @@ class ReservationServiceImpl
 
         val possibleStartDate = possibleStartDateTime.toLocalDate()
         //вытаскиваем расписание на текущий день
-        val timetable = timetableService.findByStoreIdAndWorkingDate(store.id, possibleStartDate)
+        val timetable = timetableService.findByStoreWorkingDateAndWorked(store.id, possibleStartDate)
 
         if (timetable.startTime > possibleStartDateTime.toLocalTime()
                 || timetable.endTime < possibleStartDateTime.toLocalTime()) {
@@ -86,7 +87,7 @@ class ReservationServiceImpl
         //Вытаскиваем все брони на текущий день которые еще открыты
         val allReservesOnCurrentDay = findByPlaceIdAndTimetableIsOpen(placeId, possibleStartDate, timetable)
 
-        val possibleStartTimeOfSeconds = truncToHalfHour(possibleStartDateTime)
+        val possibleStartTimeOfSeconds = truncToHalfHour(possibleStartDateTime).toLocalTime().toSecondOfDay()
 
         val endTime: Int = getEndTime(timetable)
         val range = (possibleStartTimeOfSeconds + tarifInSec)..endTime
@@ -120,7 +121,7 @@ class ReservationServiceImpl
         val store = storeService.findByPlaceReservationId(reservationDto.placeReservationId)
 
         //вытаскиваем расписание на текущий день
-        val timetable = timetableService.findByStoreIdAndWorkingDate(store.id, reservationDto.reservationStartTime.toLocalDate())
+        val timetable = timetableService.findByStoreWorkingDateAndWorked(store.id, reservationDto.reservationStartTime.toLocalDate())
 
         val allReservations = findByPlaceIdAndTimetableIsOpen(reservationDto.placeReservationId, reservationDto.reservationStartTime.toLocalDate(), timetable)
 
@@ -227,12 +228,12 @@ class ReservationServiceImpl
         )
     }
 
-    private fun truncToHalfHour(input: LocalDateTime): Int {
-        val trunc = input.toLocalTime().truncatedTo(ChronoUnit.HOURS).toSecondOfDay()
+    private fun truncToHalfHour(input: LocalDateTime): LocalDateTime {
+        val trunc = input.toLocalTime().truncatedTo(ChronoUnit.HOURS)
 
-        return if (input.minute >= 30)
-            trunc + halfHourInSec
-        else trunc
+        return if (input.minute >= halfHour)
+            LocalDateTime.of(input.toLocalDate(), trunc.plusMinutes(halfHour))
+        else LocalDateTime.of(input.toLocalDate(), trunc)
     }
 
     /**

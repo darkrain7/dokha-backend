@@ -42,7 +42,7 @@ class TimetableFillScheduler
 
         val currentDate = LocalDate.now()
 
-        val nextSevenDays = getNexSevenDaysCalendar()
+        val nextSevenDays = currentDate.plusDays(7)
 
         val latestTimetableByStoreId = storeService.findAll()
                 .associateBy({ it.id }, { timetableService.findMaxWorkingDateByStoreId(it.id) })
@@ -79,15 +79,5 @@ class TimetableFillScheduler
             timetableService.generateDefaultTimetable(currentDate, it.key)
         else
             it.value!!
-    }
-
-    private fun getNexSevenDaysCalendar(): LocalDate {
-        val nextSevenDays = Calendar.getInstance()
-        nextSevenDays.set(Calendar.HOUR_OF_DAY, 0)
-        nextSevenDays.set(Calendar.MINUTE, 0)
-        nextSevenDays.set(Calendar.SECOND, 0)
-        nextSevenDays.add(Calendar.DAY_OF_MONTH, 7)
-        return java.sql.Date(nextSevenDays.timeInMillis).toLocalDate()
-
     }
 }
