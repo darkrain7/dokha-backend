@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Service
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
+import java.time.*
 import java.time.temporal.ChronoUnit
 
 private val logger = KotlinLogging.logger {}
@@ -44,17 +41,22 @@ class ReservationServiceImpl
         val allReservesOnCurrentDay = findByPlaceIdAndTimetable(placeId, reservationDate, timetable)
                 .filter { !it.closed }
 
-        val range = timetable.startTime.toSecondOfDay()..(timetable.endTime.toSecondOfDay() - tarifInSec)
+        val startTime = timetable.startTime.toSecondOfDay()
+        val endTime = getEndTime(timetable) - tarifInSec
+        val range = startTime..endTime
 
         val freeStartTime = mutableListOf<Reservation>()
 
         for (possibleStartTimeInSec in range step halfHourInSec) {
 
-            if (haveIntersection(allReservesOnCurrentDay, possibleStartTimeInSec, possibleStartTimeInSec + tarifInSec)) continue
+            if (haveIntersection(allReservesOnCurrentDay,
+                            possibleStartTimeInSec,
+                            possibleStartTimeInSec + tarifInSec))
+                continue
 
             val buildReservation = buildReservation(
                     placeId,
-                    LocalDateTime.of(reservationDate, LocalTime.ofSecondOfDay(possibleStartTimeInSec.toLong())),
+                    reservationDate,
                     possibleStartTimeInSec,
                     possibleStartTimeInSec + tarifInSec)
 
@@ -62,42 +64,47 @@ class ReservationServiceImpl
         }
 
         return freeStartTime
+                .filter { it.reservationStartTime > LocalDateTime.now(ZoneOffset.UTC) }
     }
 
     /**
-     * Генерирует "свободные" варианты для брони
+     * Генерирует "свободные" варианты для брони для даты начала
      */
     override fun findFreeReservation(placeId: Long, possibleStartDateTime: LocalDateTime): Collection<Reservation> {
 
         val store = storeService.findByPlaceReservationId(placeId)
 
-        val truncedPossibleStartTime = possibleStartDateTime.toLocalDate()
+        val possibleStartDate = possibleStartDateTime.toLocalDate()
         //вытаскиваем расписание на текущий день
-        val timetable = timetableService.findByStoreIdAndWorkingDate(store.id, truncedPossibleStartTime)
+        val timetable = timetableService.findByStoreIdAndWorkingDate(store.id, possibleStartDate)
 
-        if (timetable.startTime > possibleStartDateTime.toLocalTime()) {
-            logger.error { "Заведение работает только с ${timetable.startTime}" }
-            throw IllegalArgumentException("Заведение работает только с ${timetable.startTime}")
+        if (timetable.startTime > possibleStartDateTime.toLocalTime()
+                || timetable.endTime < possibleStartDateTime.toLocalTime()) {
+            logger.error { "Заведение работает только с ${timetable.startTime} до ${timetable.endTime}" }
+            throw IllegalArgumentException("Заведение работает только с ${timetable.startTime} до ${timetable.endTime}")
         }
 
         //Вытаскиваем все брони на текущий день которые еще открыты
-        val allReservesOnCurrentDay = findByPlaceIdAndTimetable(placeId, truncedPossibleStartTime, timetable)
+        val allReservesOnCurrentDay = findByPlaceIdAndTimetable(placeId, possibleStartDate, timetable)
                 .filter { !it.closed }
-
-        val freeReservation = mutableListOf<Reservation>()
 
         val possibleStartTimeOfSeconds = truncToHalfHour(possibleStartDateTime)
 
         val endTime: Int = getEndTime(timetable)
         val range = (possibleStartTimeOfSeconds + tarifInSec)..endTime
 
+        val freeReservation = mutableListOf<Reservation>()
+
         for (possibleEndTimeOfSeconds in range step halfHourInSec) {
 
-            if (haveIntersection(allReservesOnCurrentDay, possibleStartTimeOfSeconds, possibleEndTimeOfSeconds)) continue
+            if (haveIntersection(allReservesOnCurrentDay,
+                            possibleStartTimeOfSeconds,
+                            possibleEndTimeOfSeconds))
+                continue
 
             val buildReservation = buildReservation(
                     placeId,
-                    possibleStartDateTime,
+                    possibleStartDateTime.toLocalDate(),
                     possibleStartTimeOfSeconds,
                     possibleEndTimeOfSeconds)
 
@@ -183,13 +190,21 @@ class ReservationServiceImpl
         else endTime
     }
 
+    private fun getEndTime(reservation: Reservation): Int {
+        val endTime: Int = reservation.reservationEndTime.toLocalTime().toSecondOfDay()
+
+        return if (endTime < reservation.reservationStartTime.toLocalTime().toSecondOfDay())
+            endTime + hours24InSec
+        else endTime
+    }
+
     override fun haveIntersection(allReservesOnCurrentDay: Collection<Reservation>,
                                   possibleStartTime: Int,
                                   possibleEndTime: Int): Boolean {
         return allReservesOnCurrentDay.any {
 
             val reserveStartTime = it.reservationStartTime.toLocalTime().toSecondOfDay()
-            val reserveEndTime = it.reservationEndTime.toLocalTime().toSecondOfDay()
+            val reserveEndTime = getEndTime(it)
             val reserveTimeRange = reserveStartTime..reserveEndTime
 
             //время начала не находится в ренжде других броней(но может совпасть с концом другой брони)
@@ -211,25 +226,31 @@ class ReservationServiceImpl
     }
 
     private fun buildReservation(placeId: Long,
-                                 possibleStartDateTime: LocalDateTime,
+                                 possibleStartDate: LocalDate,
                                  possibleStartTime: Int,
                                  possibleEndTime: Int): Reservation {
 
         return Reservation(
                 placeReservation = placeReservationService.findById(placeId),
                 user = null,
-                reservationStartTime = LocalDateTime.of(possibleStartDateTime.toLocalDate(), LocalTime.ofSecondOfDay(possibleStartTime.toLong())),
-                reservationEndTime = LocalDateTime.of(possibleStartDateTime.toLocalDate(), generateReservationEndTime(possibleEndTime)),
+                reservationStartTime = generateReservationTime(possibleStartDate, possibleStartTime),
+                reservationEndTime = generateReservationTime(possibleStartDate, possibleEndTime),
                 closed = false
         )
     }
 
     /**
-     * LocalTime не умеет инит из 86400 => перекидываем на начало
+     * Прибавляет сутки при необходимости
      */
-    private fun generateReservationEndTime(possibleEndTime: Int): LocalTime =
-            if (possibleEndTime == hours24InSec)
-                LocalTime.ofSecondOfDay(0)
+    private fun generateReservationTime(possibleStartDate: LocalDate, possibleEndTime: Int): LocalDateTime {
+        return if (possibleEndTime >= hours24InSec)
+            LocalDateTime.of(possibleStartDate.plusDays(1), LocalTime.ofSecondOfDay((possibleEndTime - hours24InSec).toLong()))
+        else LocalDateTime.of(possibleStartDate, LocalTime.ofSecondOfDay(possibleEndTime.toLong()))
+    }
+
+    fun truncToDay(possibleEndTime: Int): LocalTime =
+            if (possibleEndTime >= hours24InSec)
+                LocalTime.ofSecondOfDay((possibleEndTime - hours24InSec).toLong())
             else LocalTime.ofSecondOfDay(possibleEndTime.toLong())
 
 }

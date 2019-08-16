@@ -9,7 +9,9 @@ import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalDateTime.ofEpochSecond
 import java.time.LocalTime
+import java.time.ZoneOffset
 import java.util.*
 
 
@@ -41,9 +43,10 @@ class ReservationController
         val calendar = Calendar.getInstance()
         calendar.time = Date(reservationDate)
 
+        val ofEpochSecond = ofEpochSecond(reservationDate, 0, ZoneOffset.UTC).toLocalDate()
         val localDate = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH))
 
-        val reservationStartTime = reservationService.findFreeReservationStartTime(placeReservationId, localDate)
+        val reservationStartTime = reservationService.findFreeReservationStartTime(placeReservationId, ofEpochSecond)
 
         return RestResponse(toDtoConverter.convertToList(reservationStartTime))
     }
@@ -65,9 +68,21 @@ class ReservationController
         return RestResponse(toDtoConverter.convertToList(reservations))
     }
 
-    @GetMapping("/findFree/test/{placeReservationId}/{reservationStartTime}")
-    fun findFreeTest(@PathVariable("placeReservationId") placeReservationId: Long,
-                     @PathVariable("reservationStartTime") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") reservationStartTime: LocalDateTime)
+    @GetMapping("/findFree/v2/startTime/{placeReservationId}/{reservationDate}")
+    fun findFreeReservationStartTimeV2(@PathVariable("placeReservationId") placeReservationId: Long,
+                                       @PathVariable("reservationDate")
+                                       @DateTimeFormat(pattern = "yyyy-MM-dd") reservationDate: LocalDate)
+            : RestResponse<Collection<ReservationDto>> {
+
+        val reservationStartTime = reservationService.findFreeReservationStartTime(placeReservationId, reservationDate)
+
+        return RestResponse(toDtoConverter.convertToList(reservationStartTime))
+    }
+
+    @GetMapping("/findFree/v2/{placeReservationId}/{reservationStartTime}")
+    fun findFreeReservationV2(@PathVariable("placeReservationId") placeReservationId: Long,
+                              @PathVariable("reservationStartTime")
+                              @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") reservationStartTime: LocalDateTime)
             : RestResponse<Collection<ReservationDto>> {
 
         val findFreeReservation = reservationService.findFreeReservation(placeReservationId, reservationStartTime)
