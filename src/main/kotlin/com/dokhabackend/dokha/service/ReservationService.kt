@@ -19,7 +19,7 @@ interface ReservationService {
 
     fun findByPlaceReservationId(placeId: Long): Collection<Reservation>
 
-    fun findByPlaceIdAndTimetable(placeId: Long, date: LocalDate, timetable: Timetable): Collection<Reservation>
+    fun findByPlaceIdAndTimetableIsOpen(placeId: Long, date: LocalDate, timetable: Timetable): Collection<Reservation>
 
     fun findFreeReservationStartTime(placeId: Long, reservationDate: LocalDate): Collection<Reservation>
 

@@ -38,8 +38,7 @@ class ReservationServiceImpl
         //вытаскиваем расписание на текущий день
         val timetable = timetableService.findByStoreIdAndWorkingDate(store.id, reservationDate)
 
-        val allReservesOnCurrentDay = findByPlaceIdAndTimetable(placeId, reservationDate, timetable)
-                .filter { !it.closed }
+        val allReservesOnCurrentDay = findByPlaceIdAndTimetableIsOpen(placeId, reservationDate, timetable)
 
         val startTime = timetable.startTime.toSecondOfDay()
         val endTime = getEndTime(timetable) - tarifInSec
@@ -85,8 +84,7 @@ class ReservationServiceImpl
         }
 
         //Вытаскиваем все брони на текущий день которые еще открыты
-        val allReservesOnCurrentDay = findByPlaceIdAndTimetable(placeId, possibleStartDate, timetable)
-                .filter { !it.closed }
+        val allReservesOnCurrentDay = findByPlaceIdAndTimetableIsOpen(placeId, possibleStartDate, timetable)
 
         val possibleStartTimeOfSeconds = truncToHalfHour(possibleStartDateTime)
 
@@ -124,7 +122,7 @@ class ReservationServiceImpl
         //вытаскиваем расписание на текущий день
         val timetable = timetableService.findByStoreIdAndWorkingDate(store.id, reservationDto.reservationStartTime.toLocalDate())
 
-        val allReservations = findByPlaceIdAndTimetable(reservationDto.placeReservationId, reservationDto.reservationStartTime.toLocalDate(), timetable)
+        val allReservations = findByPlaceIdAndTimetableIsOpen(reservationDto.placeReservationId, reservationDto.reservationStartTime.toLocalDate(), timetable)
 
         val start = timetable.startTime.toSecondOfDay()
         val end = getEndTime(timetable)
@@ -165,12 +163,13 @@ class ReservationServiceImpl
     /**
      * Достает все брони по столу за указанный день
      */
-    override fun findByPlaceIdAndTimetable(placeId: Long, date: LocalDate, timetable: Timetable): Collection<Reservation> {
+    override fun findByPlaceIdAndTimetableIsOpen(placeId: Long, date: LocalDate, timetable: Timetable): Collection<Reservation> {
 
         val start = LocalDateTime.of(date, timetable.startTime)
         val end = generateEndTime(date, timetable)
 
         return reservationRepository.findByPlaceIdAndDateInterval(placeId, start, end)
+                .filter { !it.closed }
     }
 
     private fun generateEndTime(date: LocalDate, timetable: Timetable): LocalDateTime =
@@ -182,20 +181,18 @@ class ReservationServiceImpl
      * Докинет сутки если заведение заканчивает работать на след сутки
      * LocalTime.of(00.00.00) == 0
      */
-    private fun getEndTime(timetable: Timetable): Int {
-        val endTime: Int = timetable.endTime.toSecondOfDay()
-
-        return if (timetable.endTime < timetable.startTime)
-            endTime + hours24InSec
-        else endTime
+    private fun getEndTime(startTime: LocalTime, endTime: LocalTime): Int {
+        return if (endTime < startTime)
+            endTime.toSecondOfDay() + hours24InSec
+        else endTime.toSecondOfDay()
     }
 
+    private fun getEndTime(timetable: Timetable): Int = getEndTime(timetable.startTime, timetable.endTime)
     private fun getEndTime(reservation: Reservation): Int {
-        val endTime: Int = reservation.reservationEndTime.toLocalTime().toSecondOfDay()
+        val startTime = reservation.reservationStartTime.toLocalTime()
+        val endTime = reservation.reservationEndTime.toLocalTime()
 
-        return if (endTime < reservation.reservationStartTime.toLocalTime().toSecondOfDay())
-            endTime + hours24InSec
-        else endTime
+        return getEndTime(startTime, endTime)
     }
 
     override fun haveIntersection(allReservesOnCurrentDay: Collection<Reservation>,
@@ -216,15 +213,6 @@ class ReservationServiceImpl
         }
     }
 
-    private fun truncToHalfHour(input: LocalDateTime): Int {
-
-        val trunc = input.toLocalTime().truncatedTo(ChronoUnit.HOURS).toSecondOfDay()
-
-        return if (input.minute >= 30)
-            trunc + halfHourInSec
-        else trunc
-    }
-
     private fun buildReservation(placeId: Long,
                                  possibleStartDate: LocalDate,
                                  possibleStartTime: Int,
@@ -239,6 +227,14 @@ class ReservationServiceImpl
         )
     }
 
+    private fun truncToHalfHour(input: LocalDateTime): Int {
+        val trunc = input.toLocalTime().truncatedTo(ChronoUnit.HOURS).toSecondOfDay()
+
+        return if (input.minute >= 30)
+            trunc + halfHourInSec
+        else trunc
+    }
+
     /**
      * Прибавляет сутки при необходимости
      */
@@ -247,16 +243,8 @@ class ReservationServiceImpl
             LocalDateTime.of(possibleStartDate.plusDays(1), LocalTime.ofSecondOfDay((possibleEndTime - hours24InSec).toLong()))
         else LocalDateTime.of(possibleStartDate, LocalTime.ofSecondOfDay(possibleEndTime.toLong()))
     }
-
-    fun truncToDay(possibleEndTime: Int): LocalTime =
-            if (possibleEndTime >= hours24InSec)
-                LocalTime.ofSecondOfDay((possibleEndTime - hours24InSec).toLong())
-            else LocalTime.ofSecondOfDay(possibleEndTime.toLong())
-
 }
 
-private fun IntRange.containsEndInclusive(value: Int): Boolean = value > this.first && value <= this.last
-private fun IntRange.containsStartInclusive(value: Int): Boolean = value >= this.first && value < this.last
 private fun IntRange.containsWithoutBoundary(value: Int): Boolean = value > this.first && value < this.last
 private fun IntRange.containsRange(value: IntRange): Boolean = this.start <= value.start && this.last >= value.last
 
