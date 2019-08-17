@@ -3,7 +3,6 @@ package com.dokhabackend.dokha.rest
 import com.dokhabackend.dokha.core.RestResponse
 import com.dokhabackend.dokha.dto.AuthenticationRequest
 import com.dokhabackend.dokha.dto.AuthenticationResponse
-import com.dokhabackend.dokha.entity.User
 import com.dokhabackend.dokha.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -25,9 +24,9 @@ class AuthenticationController
     }
 
     @PostMapping(value = ["/register"])
-    fun register(@RequestBody authenticationRequest: AuthenticationRequest): RestResponse<User> {
+    fun register(@RequestBody authenticationRequest: AuthenticationRequest): RestResponse<AuthenticationResponse> {
 
-        val registeredUser = userService.register(authenticationRequest.login, authenticationRequest.password)
+        val registeredUser = userService.registerAndLogin(authenticationRequest.login, authenticationRequest.password)
 
         return RestResponse(registeredUser)
     }

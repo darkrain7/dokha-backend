@@ -13,7 +13,7 @@ interface UserService {
 
     fun login(login: String, password: String): AuthenticationResponse
 
-    fun register(login: String, password: String) : User
+    fun registerAndLogin(login: String, password: String) : AuthenticationResponse
 
     fun findById(id: Long): User
 

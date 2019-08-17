@@ -46,7 +46,7 @@ class UserServiceImpl
                 user.roles.map { it.id }.toSet())
     }
 
-    override fun register(login: String, password: String): User {
+    override fun registerAndLogin(login: String, password: String): AuthenticationResponse {
 
         logger.info("Регистрация нового пользователя $login")
 
@@ -55,7 +55,9 @@ class UserServiceImpl
                 password = passwordEncode(password),
                 roles = setOf(UserRoleEnum.ADMIN))
 
-        return createUser(user)
+        createUser(user)
+
+        return login(login, password)
     }
 
     override fun loadUserByUsername(login: String): UserDetails {
