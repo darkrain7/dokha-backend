@@ -3,6 +3,7 @@ package com.dokhabackend.dokha.rest
 import com.dokhabackend.dokha.converter.ReservationToReservationDtoConverter
 import com.dokhabackend.dokha.core.RestResponse
 import com.dokhabackend.dokha.dto.ReservationDto
+import com.dokhabackend.dokha.entity.Reservation
 import com.dokhabackend.dokha.service.ReservationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalDateTime.ofEpochSecond
+import java.time.LocalDateTime.parse
 import java.time.LocalTime
 import java.time.ZoneOffset
 import java.util.*
@@ -100,6 +102,14 @@ class ReservationController
         val reserve = reservationService.reserve(reservationDto)
 
         return RestResponse(toDtoConverter.convert(reserve))
+    }
+
+    @GetMapping("/placeReservationStateOnCurrentTime/{storeId}")
+    fun placeReservationStateOnCurrentTime(@PathVariable("storeId") storeId: Long): RestResponse<Collection<ReservationDto>> {
+
+        val placeState = reservationService.placeReservationStateOnCurrentTime(storeId)
+
+        return RestResponse(toDtoConverter.convertToList(placeState))
     }
 
 }

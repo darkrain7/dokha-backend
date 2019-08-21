@@ -115,6 +115,11 @@ class ReservationServiceImpl
         return freeReservation
     }
 
+    override fun placeReservationStateOnCurrentTime(storeId: Long): Collection<Reservation> =
+            placeReservationService.findByStoreId(storeId)
+                    .flatMap { reservationRepository.findByPlaceReservationId(it.id) }
+                    .filter { it.reservationStartTime >= LocalDateTime.now() && it.reservationEndTime < LocalDateTime.now() }
+
     override fun generatePreReserveComment(reservationDto: ReservationDto): String {
 
         val start = reservationDto.reservationStartTime.toEpochSecond(ZoneOffset.UTC)

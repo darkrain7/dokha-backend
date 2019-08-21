@@ -29,4 +29,6 @@ interface ReservationService {
     fun haveIntersection(allReservesOnCurrentDay: Collection<Reservation>, possibleStartTime: Int, possibleEndTime: Int): Boolean
 
     fun generatePreReserveComment(reservationDto: ReservationDto): String
+
+    fun placeReservationStateOnCurrentTime(storeId: Long) : Collection<Reservation>
 }
