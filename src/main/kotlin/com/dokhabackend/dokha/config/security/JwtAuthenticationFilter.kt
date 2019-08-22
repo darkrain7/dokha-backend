@@ -1,6 +1,7 @@
 package com.dokhabackend.dokha.config.security
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.security.authentication.RememberMeAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse
 @Component
 class JwtAuthenticationFilter : OncePerRequestFilter() {
 
+    @Qualifier("userServiceImpl")
     @Autowired
     private lateinit var userDetailsService: UserDetailsService
 
