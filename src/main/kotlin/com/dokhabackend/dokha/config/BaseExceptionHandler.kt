@@ -8,6 +8,7 @@ import mu.KotlinLogging
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
@@ -29,6 +30,10 @@ class BaseExceptionHandler : AuthenticationEntryPoint {
      * Auth Exception handling
      */
     override fun commence(request: HttpServletRequest, response: HttpServletResponse, authException: AuthenticationException) {
+
+        logger.error { "$authException" }
+
+        authException.stackTrace.forEach { logger.error { it } }
 
         prepareResponse(authException, response)
 

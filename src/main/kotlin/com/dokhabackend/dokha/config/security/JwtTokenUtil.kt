@@ -4,11 +4,11 @@ import com.dokhabackend.dokha.entity.User
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
-import java.io.Serializable
 import java.util.*
 import java.util.function.Function
 
@@ -17,13 +17,8 @@ import java.util.function.Function
  * Утилиты для jwt
  */
 @Component
-class JwtTokenUtil : Serializable {
-
-    @Value("\${jwt.accessTokenValidityMillisecond}")
-    private var ACCESS_TOKEN_VALIDITY_SECONDS: Long = 0
-
-    @Value("\${jwt.signingKey}")
-    private lateinit var SIGNING_KEY: String
+//Спринг пьян и не инжектить сюда черезе @ConfigProps/@Value
+class JwtTokenUtil(val jwtProperties: JwtProperties) {
 
     fun getUsernameFromToken(token: String): String = getClaimFromToken(token, Function { it.subject })
 
@@ -39,7 +34,7 @@ class JwtTokenUtil : Serializable {
     private fun getAllClaimsFromToken(token: String): Claims {
         try {
             return Jwts.parser()
-                    .setSigningKey(SIGNING_KEY)
+                    .setSigningKey(jwtProperties.signingKey)
                     .parseClaimsJws(token)
                     .body
         } catch (e: Exception) {
@@ -66,14 +61,13 @@ class JwtTokenUtil : Serializable {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuer("dokha")
-                .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
+                .signWith(SignatureAlgorithm.HS256, jwtProperties.signingKey)
                 .setIssuedAt(Date(System.currentTimeMillis()))
-                .setExpiration(Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS * 1000))
+                .setExpiration(Date(System.currentTimeMillis() + jwtProperties.accessTokenValidityMillisecond * 1000))
                 .compact()
     }
 
     fun validateToken(token: String, userDetails: UserDetails): Boolean? {
         return getUsernameFromToken(token) == userDetails.username && !isTokenExpired(token)
     }
-
 }

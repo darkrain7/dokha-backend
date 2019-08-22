@@ -24,8 +24,8 @@ spring:
             non_contextual_creation: true
 
 jwt:
-  signingKey: dokha42
   header: X-Auth-Token
+  signingKey: dokha42
   accessTokenValidityMillisecond: 31556926 # год
 
 testUser:

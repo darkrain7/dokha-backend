@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <logger name="com.dokhabackend.dokha" level="TRACE"/>
+    <logger name="flyway" level="ERROR"/>
+    <logger name="com.zaxxer.hikari.HikariConfig" level="INFO"/>
+
+    <!--Общий логер-->
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- Логер для приложения -->
+    <logger name="com.dokhabackend.dokha" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+</configuration>

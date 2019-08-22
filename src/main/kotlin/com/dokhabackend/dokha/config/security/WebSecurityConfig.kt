@@ -48,10 +48,10 @@ class WebSecurityConfig
                 .antMatchers("/login", "/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .exceptionHandling().authenticationEntryPoint(exceptionHandler)
-
-        http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter::class.java)
-
+                .exceptionHandling()
+                .authenticationEntryPoint(exceptionHandler)
+                .and()
+                .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter::class.java)
     }
 
     @Bean
