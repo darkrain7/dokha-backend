@@ -25,4 +25,8 @@ data class Store(
 
         @Column(name = "photo")
         val photo: ByteArray
-)
+) {
+        //ignore byteArray
+        override fun toString(): String =
+                "Store(id=$id, name=$name, location=$location)"
+}
