@@ -5,7 +5,7 @@
 
     <groupId>com.dokha-backend</groupId>
     <artifactId>dokha</artifactId>
-    <version>0.0.1-BETA</version>
+    <version>0.0.2-BETA</version>
     <name>dokha</name>
     <description>Dokha Backend Service</description>
 
