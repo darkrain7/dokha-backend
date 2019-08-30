@@ -31,16 +31,16 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
         val token = req.getHeader(jwtProperties.header)
         val uri = req.requestURI
 
-        if (uri.contains("register") || uri.contains("login"))
-            chain.doFilter(req, res)
+        if (uri.contains("/register") || uri.contains("/login"))
+
         else if (token == null || token.isEmpty())
             throw AuthenticationException("Вася а где токен?")
+        else {
+            val login = JwtTokenUtil(jwtProperties).getUsernameFromToken(token)
+            val user = userDetailsService.loadUserByUsername(login)
 
-        val login = JwtTokenUtil(jwtProperties).getUsernameFromToken(token)
-        val user = userDetailsService.loadUserByUsername(login)
-
-        SecurityContextHolder.getContext().authentication = RememberMeAuthenticationToken(token, user, user.authorities)
-
+            SecurityContextHolder.getContext().authentication = RememberMeAuthenticationToken(token, user, user.authorities)
+        }
         chain.doFilter(req, res)
     }
 }
