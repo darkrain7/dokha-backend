@@ -18,14 +18,14 @@ interface ReservationRepository : CrudRepository<Reservation, Long> {
     fun findByPlaceReservationId(placeId: Long): Collection<Reservation>
 
     @Query("SELECT *" +
-            " FROM reservation r" +
-            " INNER JOIN timetable t ON t.id = r.timetable_id" +
+            " FROM dokha.reservation r" +
+            " INNER JOIN dokha.timetable t ON t.id = r.timetable_id" +
             " WHERE t.working_date = :workingDate" +
             " AND r.place_id = :placeId", nativeQuery = true)
     fun findByPlaceIdAndDate(@Param("placeId") placeId: Long, @Param("workingDate") workingDate: Long): Collection<Reservation>
 
     @Query(value = "SELECT *" +
-            " FROM reservation r" +
+            " FROM dokha.reservation r" +
             " WHERE r.reservation_start_time >= :startTime " +
             " AND r.reservation_end_time <= :endTime" +
             " AND place_id = :placeId ", nativeQuery = true)

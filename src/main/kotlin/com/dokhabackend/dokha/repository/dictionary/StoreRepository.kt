@@ -20,8 +20,8 @@ interface StoreRepository : CrudRepository<Store, Long> {
     override fun findAll(): Collection<Store>
 
     @Query(value = "SELECT * " +
-            "FROM s_store s " +
-            "LEFT JOIN s_place_reservation pr ON s.id = pr.store_id " +
+            "FROM dokha.s_store s " +
+            "LEFT JOIN dokha.s_place_reservation pr ON s.id = pr.store_id " +
             "  WHERE pr.id = :placeId", nativeQuery = true)
     fun findByPlaceReservationId(@Param("placeId") placeId: Long): Optional<Store>
 }

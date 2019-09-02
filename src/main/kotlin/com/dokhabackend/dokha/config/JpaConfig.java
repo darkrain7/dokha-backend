@@ -42,7 +42,7 @@ public class JpaConfig {
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(driverClassName);
         config.setJdbcUrl(url);
-//        config.setSchema("dokha");
+        config.setSchema("dokha");
         config.setUsername(user);
         config.setPoolName("DokhaCP");
         config.setPassword(password);
