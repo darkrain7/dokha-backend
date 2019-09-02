@@ -6,7 +6,7 @@
     <changeSet id="01-09-2019-fill_image_id" author="SemenovAE" context="production">
 
         <sql>
-            UPDATE s_store s
+            UPDATE dokha.s_store s
             SET photo_id = img.id
             FROM s_image img WHERE s.id = img.id;
         </sql>
@@ -25,7 +25,7 @@
         </insert>
 
         <sql>
-            UPDATE s_place_reservation
+            UPDATE dokha.s_place_reservation
             SET image_id =  4;
         </sql>
     </changeSet>
