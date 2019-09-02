@@ -38,12 +38,11 @@ public class JpaConfig {
 
     @Bean
     public DataSource configureDataSource() {
-//        LOGGER.debug("Configuring datasource {} {} {}", driverClassName, url, user);
 
-        System.out.println("Hikari config : " + url + " " + user);
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(driverClassName);
         config.setJdbcUrl(url);
+        config.setSchema("dokha");
         config.setUsername(user);
         config.setPoolName("DokhaCP");
         config.setPassword(password);
