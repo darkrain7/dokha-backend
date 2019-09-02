@@ -21,6 +21,7 @@ class PlaceReservationToPlaceReservationDtoConverter : AbstractConverter<PlaceRe
                     description = fromObject.description,
                     seatsCount = fromObject.seatsCount,
                     haveGamingConsole = fromObject.haveGamingConsole,
-                    storeId = fromObject.store.id
+                    storeId = fromObject.store.id,
+                    imageId = fromObject.imageId
             )
 }

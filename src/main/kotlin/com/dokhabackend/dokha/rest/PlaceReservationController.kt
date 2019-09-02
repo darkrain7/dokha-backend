@@ -43,4 +43,12 @@ class PlaceReservationController
 
         return RestResponse(toDtoConverter.convertToList(placeReservation))
     }
+
+    @GetMapping(value = ["/image/{placeId}"])
+    fun findImage(@PathVariable("placeId") placeId: Long): RestResponse<ByteArray> {
+
+        val image = placeReservationService.findImage(placeId)
+
+        return RestResponse(image)
+    }
 }

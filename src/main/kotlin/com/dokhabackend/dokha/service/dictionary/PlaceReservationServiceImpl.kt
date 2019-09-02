@@ -1,6 +1,7 @@
 package com.dokhabackend.dokha.service.dictionary
 
 import com.dokhabackend.dokha.entity.dictionary.PlaceReservation
+import com.dokhabackend.dokha.repository.dictionary.ImageRepository
 import com.dokhabackend.dokha.repository.dictionary.PlaceReservationRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Service
 @Service
 @PreAuthorize("isAuthenticated()")
 class PlaceReservationServiceImpl
-@Autowired constructor(val placeReservationRepository: PlaceReservationRepository) : PlaceReservationService {
+@Autowired constructor(val placeReservationRepository: PlaceReservationRepository,
+                       val imageRepository: ImageRepository)
+    : PlaceReservationService {
 
     override fun findById(id: Long): PlaceReservation =
             placeReservationRepository.findById(id).orElseThrow { IllegalStateException("place not found") }
@@ -18,4 +21,10 @@ class PlaceReservationServiceImpl
     override fun findAll(): Collection<PlaceReservation> = placeReservationRepository.findAll()
 
     override fun findByStoreId(storeId: Long): Collection<PlaceReservation> = placeReservationRepository.findByStoreId(storeId)
+
+    override fun findImage(placeId: Long): ByteArray {
+        val imageId = findById(placeId).imageId
+
+        return imageRepository.findById(imageId)
+    }
 }

@@ -1,6 +1,5 @@
 package com.dokhabackend.dokha.entity.dictionary
 
-import com.dokhabackend.dokha.entity.Reservation
 import javax.persistence.*
 
 
@@ -26,6 +25,9 @@ data class PlaceReservation(
 
         @Column(name = "have_game_console")
         val haveGamingConsole: Boolean,
+
+        @Column(name = "image_id")
+        val imageId: Long,
 
         @ManyToOne
         @JoinColumn(name = "store_id")

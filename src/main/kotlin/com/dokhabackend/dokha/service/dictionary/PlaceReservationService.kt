@@ -15,4 +15,6 @@ interface PlaceReservationService {
     fun findAll(): Collection<PlaceReservation>
 
     fun findByStoreId(storeId: Long): Collection<PlaceReservation>
+
+    fun findImage(placeId: Long) : ByteArray
 }
