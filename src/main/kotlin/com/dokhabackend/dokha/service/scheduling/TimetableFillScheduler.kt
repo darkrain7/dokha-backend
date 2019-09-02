@@ -13,9 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import java.time.LocalDate
-import java.util.*
 import javax.transaction.Transactional
-import kotlin.collections.ArrayList
 
 /**
  * Created by SemenovAE on 28.06.2019
@@ -75,9 +73,7 @@ class TimetableFillScheduler
     }
 
     private fun getTimetableOrDefault(it: Map.Entry<Long, Timetable?>, currentDate: LocalDate): Timetable {
-        return if (it.value == null)
-            timetableService.generateDefaultTimetable(currentDate, it.key)
-        else
-            it.value!!
+        val value = it.value
+        return value ?: timetableService.generateDefaultTimetable(currentDate, it.key)
     }
 }

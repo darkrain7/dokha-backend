@@ -1,0 +1,32 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="31-08-2019-create_s_image" author="SemenovAE" context="production">
+
+        <createTable tableName="s_image">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="image" type="bytea">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <sql>
+            INSERT INTO s_image (image)
+            SELECT photo
+            FROM s_store;
+        </sql>
+
+        <dropColumn tableName="s_store" columnName="photo"/>
+        <addColumn tableName="s_store">
+            <column name="photo_id" type="bigint">
+                <constraints foreignKeyName="store_image_fk" referencedColumnNames="id" referencedTableName="s_image"
+                             nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

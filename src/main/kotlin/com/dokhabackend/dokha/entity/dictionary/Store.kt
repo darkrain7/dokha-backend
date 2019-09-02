@@ -23,10 +23,6 @@ data class Store(
         @Column(name = "location")
         val location: String,
 
-        @Column(name = "photo")
-        val photo: ByteArray
-) {
-        //ignore byteArray
-        override fun toString(): String =
-                "Store(id=$id, name=$name, location=$location)"
-}
+        @Column(name = "photo_id")
+        val imageId: Long
+)

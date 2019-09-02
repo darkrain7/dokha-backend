@@ -1,0 +1,33 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="01-09-2019-fill_image_id" author="SemenovAE" context="production">
+
+        <sql>
+            UPDATE s_store s
+            SET photo_id = img.id
+            FROM s_image img WHERE s.id = img.id;
+        </sql>
+
+        <addNotNullConstraint tableName="s_store" columnName="photo_id"/>
+
+        <addColumn tableName="s_place_reservation">
+            <column name="image_id" type="bigint">
+                <constraints foreignKeyName="place_image_fk" referencedTableName="s_image" referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+
+        <insert tableName="s_image">
+            <column name="id" valueNumeric="4"/>
+            <column name="image" valueBlobFile="data/test_place.jpg"/>
+        </insert>
+
+        <sql>
+            UPDATE s_place_reservation
+            SET image_id =  4;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

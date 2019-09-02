@@ -3,6 +3,7 @@ package com.dokhabackend.dokha.service.dictionary
 import com.dokhabackend.dokha.converter.dictionary.StoreDtoToStoreEntityConverter
 import com.dokhabackend.dokha.dto.dictionary.StoreDto
 import com.dokhabackend.dokha.entity.dictionary.Store
+import com.dokhabackend.dokha.repository.dictionary.ImageRepository
 import com.dokhabackend.dokha.repository.dictionary.StoreRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service
 @PreAuthorize("isAuthenticated()")
 class StoreServiceImpl @Autowired constructor(
         private val storeRepository: StoreRepository,
+        private val imageRepository: ImageRepository,
         private val toEntityConverter: StoreDtoToStoreEntityConverter) : StoreService {
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -33,7 +35,10 @@ class StoreServiceImpl @Autowired constructor(
             storeRepository.findByPlaceReservationId(placeId)
                     .orElseThrow { throw IllegalArgumentException("Заведение не найдено") }
 
-    override fun getPhotoByStoreId(storeId: Long): ByteArray = findById(storeId).photo
+    override fun getPhotoByStoreId(storeId: Long): ByteArray {
+        val imageId = findById(storeId).imageId
 
+        return imageRepository.findById(imageId)
+    }
 
 }
