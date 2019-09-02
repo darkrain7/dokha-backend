@@ -6,7 +6,7 @@
     <changeSet id="02-09-2019-set_search_path" author="SemenovAE" context="production">
 
         <sql>
-            ALTER DATABASE dokha SET search_path TO dokha;
+            ALTER ROLE dokha SET search_path TO dokha;
         </sql>
     </changeSet>
 
