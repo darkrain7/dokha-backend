@@ -17,7 +17,7 @@ import javax.sql.DataSource
 @Repository
 class ImageRepository @Autowired constructor(private val dataSource: DataSource) {
 
-    private val query: String = "SELECT image FROM s_image WHERE id = :id"
+    private val query: String = "SELECT image FROM dokha.s_image WHERE id = :id"
 
     fun save(image: ByteArray): Long =
             SimpleJdbcInsert(dataSource).executeAndReturnKey(mapOf("image" to image)) as Long
