@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.ResultSetExtractor
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.stereotype.Repository
+import java.util.Optional.ofNullable
 import javax.sql.DataSource
 
 
@@ -23,10 +24,12 @@ class ImageRepository @Autowired constructor(private val dataSource: DataSource)
             SimpleJdbcInsert(dataSource).executeAndReturnKey(mapOf("image" to image)) as Long
 
     fun findById(id: Long): ByteArray =
-            NamedParameterJdbcTemplate(dataSource)
-                    .query(query, mapOf("id" to id), ResultSetExtractor {
-                        it.next()
-                        it.getBytes("image")
-                    })!!
+            ofNullable(
+                    NamedParameterJdbcTemplate(dataSource)
+                            .query(query, mapOf("id" to id), ResultSetExtractor {
+                                it.next()
+                                it.getBytes("image")
+                            }))
+                    .orElseThrow { IllegalStateException("Изображение не найдено") }
 
 }
