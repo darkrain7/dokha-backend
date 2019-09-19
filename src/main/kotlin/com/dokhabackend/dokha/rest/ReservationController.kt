@@ -3,7 +3,6 @@ package com.dokhabackend.dokha.rest
 import com.dokhabackend.dokha.converter.ReservationToReservationDtoConverter
 import com.dokhabackend.dokha.core.RestResponse
 import com.dokhabackend.dokha.dto.ReservationDto
-import com.dokhabackend.dokha.entity.Reservation
 import com.dokhabackend.dokha.service.ReservationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalDateTime.ofEpochSecond
-import java.time.LocalDateTime.parse
 import java.time.LocalTime
 import java.time.ZoneOffset
 import java.util.*
@@ -93,8 +91,8 @@ class ReservationController
     }
 
     @GetMapping("/preReserveComment")
-    fun getPreReserveComment(@RequestBody reservationDto: ReservationDto) =
-        RestResponse(reservationService.generatePreReserveComment(reservationDto))
+    fun getPreReserveComment(@RequestBody reservationDto: ReservationDto): RestResponse<String> =
+            RestResponse(reservationService.generatePreReserveComment(reservationDto))
 
     @PostMapping("/reserve")
     fun reserve(@RequestBody reservationDto: ReservationDto): RestResponse<ReservationDto> {
@@ -110,6 +108,22 @@ class ReservationController
         val placeState = reservationService.placeReservationStateOnCurrentTime(storeId)
 
         return RestResponse(toDtoConverter.convertToList(placeState))
+    }
+
+    @GetMapping("/close/{id}")
+    fun closeReservation(@PathVariable("id") id: Long): RestResponse<ReservationDto> {
+
+        val closedReservation = reservationService.closeReservation(id)
+
+        return RestResponse(toDtoConverter.convert(closedReservation))
+    }
+
+    @GetMapping("/findActiveByStoreId/{storeId}")
+    fun findActiveByStoreId(@PathVariable("storeId") storeId: Long): RestResponse<Collection<ReservationDto>> {
+
+        val reservations = reservationService.findCurrentActiveReservations(storeId)
+
+        return RestResponse(toDtoConverter.convertToList(reservations))
     }
 
 }

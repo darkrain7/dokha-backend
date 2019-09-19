@@ -66,7 +66,7 @@ class ReservationServiceImpl
         }
 
         return freeStartTime
-                .filter { it.reservationStartTime > LocalDateTime.now(ZoneOffset.UTC) }
+                .filter { it.reservationStartTime > LocalDateTime.now(ZoneOffset.systemDefault()) }
     }
 
     /**
@@ -80,8 +80,8 @@ class ReservationServiceImpl
         //вытаскиваем расписание на текущий день
         val timetable = timetableService.findByStoreWorkingDateAndWorked(store.id, possibleStartDate)
 
-        if (timetable.startTime > possibleStartDateTime.toLocalTime()
-                || timetable.endTime < possibleStartDateTime.toLocalTime()) {
+        if (timetable.startTime.toSecondOfDay() > possibleStartDateTime.toLocalTime().toSecondOfDay()
+                || getEndTime(timetable) < possibleStartDateTime.toLocalTime().toSecondOfDay()) {
             logger.error { "Заведение работает только с ${timetable.startTime} до ${timetable.endTime}" }
             throw IllegalArgumentException("Заведение работает только с ${timetable.startTime} до ${timetable.endTime}")
         }
@@ -113,6 +113,18 @@ class ReservationServiceImpl
         }
 
         return freeReservation
+    }
+
+    override fun findCurrentActiveReservations(storeId: Long): Collection<Reservation> =
+            reservationRepository.findByStoreIdAndDateInterval(storeId, LocalDateTime.now(), LocalDateTime.now())
+
+
+    override fun closeReservation(id: Long): Reservation {
+        val reservation = findById(id)
+
+        val closedReservation = reservation.copy(reservationEndTime = LocalDateTime.now())
+
+        return reservationRepository.save(closedReservation)
     }
 
     override fun placeReservationStateOnCurrentTime(storeId: Long): Collection<Reservation> =

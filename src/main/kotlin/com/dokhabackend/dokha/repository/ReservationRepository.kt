@@ -32,4 +32,15 @@ interface ReservationRepository : CrudRepository<Reservation, Long> {
     fun findByPlaceIdAndDateInterval(@Param("placeId") placeId: Long,
                                      @Param("startTime") startTime: LocalDateTime,
                                      @Param("endTime") endTime: LocalDateTime): Collection<Reservation>
+
+    @Query(value = "SELECT *" +
+            " FROM dokha.reservation r" +
+            " LEFT JOIN dokha.s_place_reservation p ON p.id = r.place_id" +
+            " LEFT JOIN dokha.s_store s ON s.id = p.store_id" +
+            " WHERE r.reservation_start_time >= :startTime " +
+            " AND r.reservation_end_time <= :endTime" +
+            " AND s.id = :storeId ", nativeQuery = true)
+    fun findByStoreIdAndDateInterval(@Param("storeId") storeId: Long,
+                                     @Param("startTime") startTime: LocalDateTime,
+                                     @Param("endTime") endTime: LocalDateTime): Collection<Reservation>
 }

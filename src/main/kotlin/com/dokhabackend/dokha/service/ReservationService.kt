@@ -31,4 +31,8 @@ interface ReservationService {
     fun generatePreReserveComment(reservationDto: ReservationDto): String
 
     fun placeReservationStateOnCurrentTime(storeId: Long) : Collection<Reservation>
+
+    fun findCurrentActiveReservations(storeId: Long) : Collection<Reservation>
+
+    fun closeReservation(id: Long) : Reservation
 }
