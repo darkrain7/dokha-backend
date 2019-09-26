@@ -1,0 +1,17 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="26-09-2019-add_active_store_column.xml" author="SemenovAE" context="production">
+
+        <addColumn tableName="s_store">
+            <column name="active" type="Boolean"/>
+        </addColumn>
+
+        <sql>
+            UPDATE dokha.s_store SET active = true
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -24,5 +24,8 @@ data class Store(
         val location: String,
 
         @Column(name = "photo_id")
-        val imageId: Long
+        val imageId: Long,
+
+        @Column(name = "active")
+        val active: Boolean
 )

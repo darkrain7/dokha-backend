@@ -14,5 +14,7 @@ data class StoreDto(
 
         val location: String,
 
-        val photoId: Long
+        val photoId: Long,
+
+        val active: Boolean
 )

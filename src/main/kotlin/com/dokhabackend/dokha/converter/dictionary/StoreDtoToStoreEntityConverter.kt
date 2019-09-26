@@ -19,5 +19,6 @@ class StoreDtoToStoreEntityConverter @Autowired constructor()
             Store(id = fromObject.id,
                     name = fromObject.name,
                     location = fromObject.location,
-                    imageId = fromObject.photoId)
+                    imageId = fromObject.photoId,
+                    active = fromObject.active)
 }
